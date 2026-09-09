@@ -652,10 +652,11 @@
     }, { threshold: 0.15 });
     revealEls.forEach(function(el){ observer.observe(el); });
 
-    // ---------- 3D animated background: an automation workflow network ----------
-    // Nodes = workflow steps, lines = connections, glowing pulses = data/tasks
-    // moving through the automation — a deliberate stand-in for the kind of
-    // pipelines (n8n / Zapier / Make style graphs) this portfolio is about.
+    // ---------- 3D animated background: an automation workflow canvas ----------
+    // Labeled step "chips" (the real apps/services a workflow connects) linked
+    // by curved connectors, with glowing packets traveling along them — this
+    // is meant to read as an actual automation graph, like the canvas inside
+    // n8n / Zapier / Make, rather than a generic abstract network.
     (function(){
       var canvas = document.getElementById('bg-canvas');
       var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -668,60 +669,140 @@
       var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
       camera.position.z = 20;
 
-      var light = new THREE.DirectionalLight(0xffffff, 0.9);
-      light.position.set(5, 8, 10);
-      scene.add(light);
-      scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-
       var group = new THREE.Group();
       scene.add(group);
 
-      var nodeColors = [0xb98a5e, 0x7c8a75, 0x8493a8];
-      var signalColor = 0x4fb3a8;
+      var signalColor = 'rgba(79,179,168,1)';
+      var inkColor = '#2f2a22';
 
-      var nodeCount = window.innerWidth < 600 ? 12 : 20;
-      var spread = 20;
-      var nodes = [];
-
-      for (var i = 0; i < nodeCount; i++){
-        // Keep a clear gap around the horizontal center so hero text and
-        // section headings never sit directly on top of the network.
-        var xSign = i % 2 === 0 ? 1 : -1;
-        nodes.push(new THREE.Vector3(
-          xSign * (4.5 + Math.random() * (spread / 2)),
-          (Math.random() - 0.5) * spread * 0.75,
-          (Math.random() - 0.5) * 10 - 5
-        ));
+      function roundRectPath(ctx, x, y, w, h, r){
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
       }
 
-      // Workflow nodes
-      var nodeGeo = new THREE.IcosahedronGeometry(0.34, 1);
-      var nodeMeshes = [];
-      nodes.forEach(function(pos, i){
-        var mat = new THREE.MeshStandardMaterial({
-          color: nodeColors[i % nodeColors.length],
-          metalness: 0.15,
-          roughness: 0.4,
-          emissive: nodeColors[i % nodeColors.length],
-          emissiveIntensity: 0.18,
-          transparent: true,
-          opacity: 0.85
-        });
-        var mesh = new THREE.Mesh(nodeGeo, mat);
-        mesh.position.copy(pos);
-        mesh.userData.baseY = pos.y;
-        mesh.userData.floatOffset = Math.random() * Math.PI * 2;
-        mesh.userData.floatSpeed = 0.3 + Math.random() * 0.4;
-        group.add(mesh);
-        nodeMeshes.push(mesh);
+      // Draws a small rounded "step" chip (dot + label) to a canvas texture,
+      // the same visual grammar automation-builder canvases use for nodes.
+      function makeChipTexture(label, dotColor){
+        var res = 3;
+        var fontSize = 26;
+        var paddingX = 20;
+        var height = 64;
+        var dotSize = 13;
+
+        var measure = document.createElement('canvas').getContext('2d');
+        measure.font = '600 ' + fontSize + 'px "Helvetica Neue", Arial, sans-serif';
+        var textWidth = measure.measureText(label).width;
+        var width = Math.ceil(textWidth + paddingX * 2 + dotSize + 14);
+
+        var c = document.createElement('canvas');
+        c.width = width * res;
+        c.height = height * res;
+        var ctx = c.getContext('2d');
+        ctx.scale(res, res);
+
+        roundRectPath(ctx, 0.75, 0.75, width - 1.5, height - 1.5, height / 2 - 1);
+        ctx.fillStyle = 'rgba(255,255,255,0.94)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(47,42,34,0.16)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.fillStyle = dotColor;
+        ctx.arc(paddingX / 1.4, height / 2, dotSize / 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = inkColor;
+        ctx.font = '600 ' + fontSize + 'px "Helvetica Neue", Arial, sans-serif';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, paddingX / 1.4 + dotSize + 10, height / 2 + 1);
+
+        var texture = new THREE.CanvasTexture(c);
+        texture.anisotropy = 4;
+        return { texture: texture, aspect: width / height };
+      }
+
+      function makeGlowTexture(){
+        var size = 128;
+        var c = document.createElement('canvas');
+        c.width = c.height = size;
+        var ctx = c.getContext('2d');
+        var g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+        g.addColorStop(0, 'rgba(255,255,255,1)');
+        g.addColorStop(0.3, signalColor.replace('1)', '0.85)'));
+        g.addColorStop(1, signalColor.replace('1)', '0)'));
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, size, size);
+        return new THREE.CanvasTexture(c);
+      }
+
+      // The real steps/services a workflow like this actually connects.
+      var steps = [
+        { label: 'Webhook', color: '#4fb3a8' },
+        { label: 'Schedule', color: '#4fb3a8' },
+        { label: 'OpenAI', color: '#b98a5e' },
+        { label: 'GPT-4', color: '#b98a5e' },
+        { label: 'Slack', color: '#8493a8' },
+        { label: 'Gmail', color: '#a97c8a' },
+        { label: 'Sheets', color: '#7c8a75' },
+        { label: 'CRM', color: '#8493a8' },
+        { label: 'Filter', color: '#b98a5e' },
+        { label: 'Database', color: '#7c8a75' },
+        { label: 'Airtable', color: '#b98a5e' },
+        { label: 'HTTP', color: '#8493a8' },
+        { label: 'n8n', color: '#7c8a75' },
+        { label: 'Zapier', color: '#a97c8a' },
+        { label: 'Make', color: '#8493a8' },
+        { label: 'If / Else', color: '#a97c8a' }
+      ];
+
+      var isMobile = window.innerWidth < 600;
+      var stepCount = isMobile ? 8 : 14;
+      var shuffled = steps.slice().sort(function(){ return Math.random() - 0.5; }).slice(0, stepCount);
+
+      // Keep a wide horizontal gap around center clear of chips: at this
+      // camera distance the hero copy spans roughly world-x -7 to +7, and
+      // it has no frosted backdrop (unlike the sections below) to fall
+      // back on for legibility.
+      var minGapX = 7.5;
+      var hRange = 7;
+      var vRange = 9;
+      var chips = [];
+
+      shuffled.forEach(function(step, i){
+        var xSign = i % 2 === 0 ? 1 : -1;
+        var pos = new THREE.Vector3(
+          xSign * (minGapX + Math.random() * hRange),
+          (Math.random() - 0.5) * vRange * 2,
+          (Math.random() - 0.5) * 8 - 5
+        );
+
+        var chip = makeChipTexture(step.label, step.color);
+        var mat = new THREE.SpriteMaterial({ map: chip.texture, transparent: true, opacity: 0.95, depthWrite: false });
+        var sprite = new THREE.Sprite(mat);
+        var h = 1.05;
+        sprite.scale.set(h * chip.aspect, h, 1);
+        sprite.position.copy(pos);
+        sprite.userData.baseY = pos.y;
+        sprite.userData.floatOffset = Math.random() * Math.PI * 2;
+        sprite.userData.floatSpeed = 0.25 + Math.random() * 0.35;
+
+        group.add(sprite);
+        chips.push(sprite);
       });
 
-      // Connections: each node links to its 1-2 nearest neighbors
+      // Connections: each chip links to its 1-2 nearest neighbors, as a
+      // gently curved bezier (the shape workflow-canvas connectors use).
       var edgeSet = {};
       var edges = [];
-      nodes.forEach(function(pos, i){
-        var distances = nodes.map(function(p2, j){
-          return { j: j, d: i === j ? Infinity : pos.distanceTo(p2) };
+      chips.forEach(function(sprite, i){
+        var distances = chips.map(function(other, j){
+          return { j: j, d: i === j ? Infinity : sprite.position.distanceTo(other.position) };
         });
         distances.sort(function(a, b){ return a.d - b.d; });
         var connections = 1 + Math.floor(Math.random() * 2);
@@ -730,49 +811,72 @@
           var key = Math.min(i, j) + '-' + Math.max(i, j);
           if (!edgeSet[key]){
             edgeSet[key] = true;
-            edges.push({ a: i, b: j });
+            var arcSign = Math.random() < 0.5 ? -1 : 1;
+            var arcAmount = 0.25 + Math.random() * 0.35;
+            edges.push({
+              a: i,
+              b: j,
+              curve: new THREE.QuadraticBezierCurve3(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()),
+              arcSign: arcSign,
+              arcAmount: arcAmount,
+              line: null
+            });
           }
         }
       });
 
-      var linePositions = new Float32Array(edges.length * 6);
-      var lineGeo = new THREE.BufferGeometry();
-      lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-      var lineMat = new THREE.LineBasicMaterial({ color: 0x8493a8, transparent: true, opacity: 0.28 });
-      var lines = new THREE.LineSegments(lineGeo, lineMat);
-      group.add(lines);
+      var lineMat = new THREE.LineBasicMaterial({ color: 0xb9ac98, transparent: true, opacity: 0.32 });
+      var curveSegments = 16;
+      edges.forEach(function(edge){
+        var geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array((curveSegments + 1) * 3), 3));
+        edge.line = new THREE.Line(geo, lineMat);
+        group.add(edge.line);
+      });
 
-      function syncEdgePositions(){
-        var arr = lineGeo.attributes.position.array;
-        edges.forEach(function(e, idx){
-          var a = nodeMeshes[e.a].position;
-          var b = nodeMeshes[e.b].position;
-          arr[idx * 6] = a.x; arr[idx * 6 + 1] = a.y; arr[idx * 6 + 2] = a.z;
-          arr[idx * 6 + 3] = b.x; arr[idx * 6 + 4] = b.y; arr[idx * 6 + 5] = b.z;
+      function updateEdgeCurve(edge){
+        var a = chips[edge.a].position;
+        var b = chips[edge.b].position;
+        var mid = a.clone().add(b).multiplyScalar(0.5);
+        var dir = b.clone().sub(a);
+        var normal = new THREE.Vector3(-dir.y, dir.x, dir.z).normalize().multiplyScalar(dir.length() * edge.arcAmount * edge.arcSign);
+        var control = mid.add(normal);
+        edge.curve.v0.copy(a);
+        edge.curve.v1.copy(control);
+        edge.curve.v2.copy(b);
+        // getPointAt() (used by the traveling pulses) relies on a cached
+        // arc-length table that must be invalidated after moving the curve.
+        edge.curve.needsUpdate = true;
+
+        var points = edge.curve.getPoints(curveSegments);
+        var arr = edge.line.geometry.attributes.position.array;
+        points.forEach(function(p, idx){
+          arr[idx * 3] = p.x; arr[idx * 3 + 1] = p.y; arr[idx * 3 + 2] = p.z;
         });
-        lineGeo.attributes.position.needsUpdate = true;
+        edge.line.geometry.attributes.position.needsUpdate = true;
       }
-      syncEdgePositions();
+      edges.forEach(updateEdgeCurve);
 
-      // Glowing pulses that travel along connections, like tasks moving
-      // through an automation pipeline
-      var pulseGeo = new THREE.SphereGeometry(0.09, 8, 8);
-      var pulseCount = Math.min(edges.length, window.innerWidth < 600 ? 6 : 12);
+      // Glowing packets traveling along the connectors, like tasks moving
+      // through the automation.
+      var glowTexture = makeGlowTexture();
+      var pulseCount = Math.min(edges.length, isMobile ? 5 : 10);
       var pulses = [];
       for (var p = 0; p < pulseCount; p++){
-        var mat = new THREE.MeshBasicMaterial({
-          color: signalColor,
+        var mat = new THREE.SpriteMaterial({
+          map: glowTexture,
           transparent: true,
-          opacity: 0.9,
+          opacity: 0.95,
           blending: THREE.AdditiveBlending,
           depthWrite: false
         });
-        var mesh = new THREE.Mesh(pulseGeo, mat);
-        mesh.userData.edge = edges[p % edges.length];
-        mesh.userData.t = Math.random();
-        mesh.userData.speed = 0.12 + Math.random() * 0.14;
-        group.add(mesh);
-        pulses.push(mesh);
+        var sprite = new THREE.Sprite(mat);
+        sprite.scale.set(0.5, 0.5, 1);
+        sprite.userData.edge = edges[p % edges.length];
+        sprite.userData.t = Math.random();
+        sprite.userData.speed = 0.1 + Math.random() * 0.12;
+        group.add(sprite);
+        pulses.push(sprite);
       }
 
       var mouseX = 0, mouseY = 0;
@@ -808,22 +912,18 @@
         var delta = Math.min(clock.getDelta(), 0.05);
 
         if (!prefersReducedMotion){
-          nodeMeshes.forEach(function(mesh){
-            mesh.position.y = mesh.userData.baseY + Math.sin(t * mesh.userData.floatSpeed + mesh.userData.floatOffset) * 0.4;
-            mesh.rotation.x += 0.003;
-            mesh.rotation.y += 0.004;
+          chips.forEach(function(sprite){
+            sprite.position.y = sprite.userData.baseY + Math.sin(t * sprite.userData.floatSpeed + sprite.userData.floatOffset) * 0.35;
           });
-          syncEdgePositions();
+          edges.forEach(updateEdgeCurve);
 
-          pulses.forEach(function(mesh){
-            mesh.userData.t += delta * mesh.userData.speed;
-            if (mesh.userData.t >= 1){
-              mesh.userData.t = 0;
-              mesh.userData.edge = edges[Math.floor(Math.random() * edges.length)];
+          pulses.forEach(function(sprite){
+            sprite.userData.t += delta * sprite.userData.speed;
+            if (sprite.userData.t >= 1){
+              sprite.userData.t = 0;
+              sprite.userData.edge = edges[Math.floor(Math.random() * edges.length)];
             }
-            var a = nodeMeshes[mesh.userData.edge.a].position;
-            var b = nodeMeshes[mesh.userData.edge.b].position;
-            mesh.position.lerpVectors(a, b, mesh.userData.t);
+            sprite.position.copy(sprite.userData.edge.curve.getPointAt(sprite.userData.t));
           });
         }
 
