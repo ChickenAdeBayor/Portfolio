@@ -4,49 +4,768 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portfolio</title>
+<meta name="description" content="Portfolio of Your Name — Creative Developer & Designer.">
 <style>
+  :root{
+    --bg: #faf6ef;
+    --bg-alt: #f2ece1;
+    --ink: #2f2a22;
+    --ink-soft: #6b6357;
+    --card: #ffffff;
+    --accent: #b98a5e;
+    --accent-2: #7c8a75;
+    --accent-3: #8493a8;
+    --border: rgba(47,42,34,0.08);
+    --shadow: 0 10px 30px rgba(47,42,34,0.08);
+  }
+
   *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
 
   html, body{
     margin: 0;
-    height: 100%;
-    background: #ffffff;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    overflow-x: hidden;
   }
 
-  body{
+  h1, h2, h3{
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  a{ color: inherit; }
+
+  /* ---------- 3D background canvas ---------- */
+  #bg-canvas{
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    display: block;
+  }
+
+  /* ---------- Nav ---------- */
+  .nav{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    padding: 22px 6vw;
+    background: rgba(250, 246, 239, 0);
+    transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
+    pointer-events: none;
+  }
+
+  .nav.scrolled{
+    background: rgba(250, 246, 239, 0.85);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 1px 0 var(--border);
+    padding: 14px 6vw;
+  }
+
+  .nav *{ pointer-events: auto; }
+
+  .nav-logo{
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.04em;
+  }
+
+  .nav-links{
+    display: flex;
+    gap: 32px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-links a{
+    text-decoration: none;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+    transition: color 0.2s ease;
+    position: relative;
+  }
+
+  .nav-links a:hover{ color: var(--ink); }
+
+  .nav-links a::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width 0.25s ease;
+  }
+
+  .nav-links a:hover::after{ width: 100%; }
+
+  /* ---------- Sections shared ---------- */
+  section{
+    position: relative;
+    z-index: 1;
+    padding: 140px 6vw;
+  }
+
+  /* Frosted panel behind content sections so the 3D background stays
+     visible as soft ambient motion without fighting with text legibility. */
+  section#about,
+  section#projects,
+  section#contact{
+    background: rgba(250, 246, 239, 0.82);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  .section-inner{
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .eyebrow{
+    display: inline-block;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+
+  .reveal{
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.is-visible{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ---------- Hero / Splash ---------- */
+  .hero{
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    font-family: Georgia, 'Times New Roman', serif;
+    text-align: center;
+    padding: 0 6vw;
+    z-index: 1;
+  }
+
+  .hero-kicker{
+    font-size: 0.85rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 22px;
+  }
+
+  .hero h1{
+    font-size: clamp(2.6rem, 7vw, 5.2rem);
+    line-height: 1.05;
+    color: var(--ink);
+  }
+
+  .hero h1 span{
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .hero p{
+    margin-top: 22px;
+    max-width: 560px;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--ink-soft);
   }
 
   .start-btn{
-    padding: 38px 200px;
-    font-size: 20 rem;
-    font-weight: 800;
-    color: #4a4438;
-    background: #faf6ef;
+    margin-top: 44px;
+    padding: 22px 64px;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    color: var(--card);
+    background: var(--ink);
     border: none;
     border-radius: 999px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow);
     cursor: pointer;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    transition: box-shadow 0.25s ease, transform 0.25s ease, background 0.25s ease;
   }
 
   .start-btn:hover{
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-    transform: translateY(-1px);
+    box-shadow: 0 14px 34px rgba(47,42,34,0.18);
+    transform: translateY(-2px);
+    background: var(--accent);
   }
 
   .start-btn:active{
     transform: translateY(0);
-    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  }
+
+  .scroll-cue{
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.8;
+  }
+
+  .scroll-cue .line{
+    width: 1px;
+    height: 34px;
+    background: linear-gradient(var(--ink-soft), transparent);
+    animation: scrollPulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse{
+    0%{ transform: scaleY(0.3); opacity: 0.3; }
+    50%{ transform: scaleY(1); opacity: 1; }
+    100%{ transform: scaleY(0.3); opacity: 0.3; }
+  }
+
+  /* ---------- About ---------- */
+  .about-grid{
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .avatar{
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-3));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, serif;
+    font-size: 3.2rem;
+    color: var(--card);
+    box-shadow: var(--shadow);
+  }
+
+  .about-text h2{
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin-bottom: 22px;
+  }
+
+  .about-text p{
+    color: var(--ink-soft);
+    line-height: 1.8;
+    font-size: 1.02rem;
+    margin-bottom: 16px;
+  }
+
+  .skills{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 26px;
+    list-style: none;
+    padding: 0;
+  }
+
+  .skills li{
+    padding: 8px 18px;
+    border-radius: 999px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--ink);
+  }
+
+  /* ---------- Projects ---------- */
+  .section-head{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .section-head h2{
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+  }
+
+  .section-head p{
+    color: var(--ink-soft);
+    max-width: 360px;
+    line-height: 1.6;
+  }
+
+  .projects-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+  }
+
+  .project-card{
+    background: var(--card);
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .project-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(47,42,34,0.14);
+  }
+
+  .project-thumb{
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, serif;
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.04em;
+  }
+
+  .thumb-1{ background: linear-gradient(135deg, #b98a5e, #e3c9a8); }
+  .thumb-2{ background: linear-gradient(135deg, #7c8a75, #b7c4ae); }
+  .thumb-3{ background: linear-gradient(135deg, #8493a8, #c2cbd9); }
+  .thumb-4{ background: linear-gradient(135deg, #a97c8a, #d9b7c2); }
+
+  .project-body{
+    padding: 26px;
+  }
+
+  .project-body h3{
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  .project-body p{
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .tags{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .tags span{
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--bg-alt);
+    color: var(--ink-soft);
+  }
+
+  .project-link{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .project-link:hover{
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ---------- Contact ---------- */
+  .contact{
+    text-align: center;
+  }
+
+  .contact h2{
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    margin-bottom: 18px;
+  }
+
+  .contact p{
+    color: var(--ink-soft);
+    max-width: 520px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+
+  .contact-email{
+    display: inline-block;
+    font-family: Georgia, serif;
+    font-size: clamp(1.3rem, 3.4vw, 2rem);
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 6px;
+    margin-bottom: 40px;
+    transition: color 0.2s ease;
+  }
+
+  .contact-email:hover{ color: var(--accent); }
+
+  .socials{
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    margin-top: 36px;
+    list-style: none;
+    padding: 0;
+  }
+
+  .socials a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    font-size: 0.82rem;
+    color: var(--ink);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+  }
+
+  .socials a:hover{
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+    color: var(--accent);
+  }
+
+  footer{
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 30px 6vw 46px;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 720px){
+    .about-grid{
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .avatar{ margin: 0 auto; }
+    .skills{ justify-content: center; }
+    .nav-links{ gap: 18px; }
+    section{ padding: 100px 6vw; }
+  }
+
+  @media (max-width: 520px){
+    .nav-links{ display: none; }
   }
 </style>
 </head>
 <body>
 
-  <button class="start-btn">Let's start</button>
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
+  <nav class="nav" id="nav">
+    <div class="nav-logo">Your Name</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ---------- Hero / Splash ---------- -->
+  <section class="hero" id="hero">
+    <div class="hero-kicker">Portfolio</div>
+    <h1>Hi, I'm <span>Your Name</span></h1>
+    <p>Creative Developer &amp; Designer crafting playful, thoughtful digital experiences. Replace this tagline with your own introduction.</p>
+    <button class="start-btn" id="start-btn">Let's start</button>
+
+    <div class="scroll-cue">
+      <span>Scroll</span>
+      <span class="line"></span>
+    </div>
+  </section>
+
+  <!-- ---------- About ---------- -->
+  <section id="about">
+    <div class="section-inner about-grid">
+      <div class="avatar reveal">YN</div>
+      <div class="about-text">
+        <div class="eyebrow reveal">About</div>
+        <h2 class="reveal">A short intro about you goes here.</h2>
+        <p class="reveal">
+          Replace this paragraph with your own story — where you're from, what you do, and what drives your work.
+          Talk about your background, the kind of problems you like solving, and what makes your approach unique.
+        </p>
+        <p class="reveal">
+          Add a second paragraph if needed: current focus, interests outside of work, or a fun fact that gives
+          visitors a sense of who you are beyond the resume.
+        </p>
+        <ul class="skills reveal">
+          <li>Skill One</li>
+          <li>Skill Two</li>
+          <li>Skill Three</li>
+          <li>Skill Four</li>
+          <li>Skill Five</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- Projects ---------- -->
+  <section id="projects">
+    <div class="section-inner">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow reveal">Work</div>
+          <h2 class="reveal">Selected Projects</h2>
+        </div>
+        <p class="reveal">A few things I've built recently. Swap these cards with real projects, screenshots, and links.</p>
+      </div>
+
+      <div class="projects-grid">
+        <article class="project-card reveal">
+          <div class="project-thumb thumb-1">Project One</div>
+          <div class="project-body">
+            <h3>Project Title One</h3>
+            <p>One or two sentences describing the project, the problem it solves, and your role in building it.</p>
+            <div class="tags"><span>React</span><span>Node.js</span><span>MongoDB</span></div>
+            <a href="#" class="project-link">View project →</a>
+          </div>
+        </article>
+
+        <article class="project-card reveal">
+          <div class="project-thumb thumb-2">Project Two</div>
+          <div class="project-body">
+            <h3>Project Title Two</h3>
+            <p>One or two sentences describing the project, the problem it solves, and your role in building it.</p>
+            <div class="tags"><span>Three.js</span><span>WebGL</span><span>GSAP</span></div>
+            <a href="#" class="project-link">View project →</a>
+          </div>
+        </article>
+
+        <article class="project-card reveal">
+          <div class="project-thumb thumb-3">Project Three</div>
+          <div class="project-body">
+            <h3>Project Title Three</h3>
+            <p>One or two sentences describing the project, the problem it solves, and your role in building it.</p>
+            <div class="tags"><span>Python</span><span>Django</span><span>PostgreSQL</span></div>
+            <a href="#" class="project-link">View project →</a>
+          </div>
+        </article>
+
+        <article class="project-card reveal">
+          <div class="project-thumb thumb-4">Project Four</div>
+          <div class="project-body">
+            <h3>Project Title Four</h3>
+            <p>One or two sentences describing the project, the problem it solves, and your role in building it.</p>
+            <div class="tags"><span>Swift</span><span>iOS</span><span>Figma</span></div>
+            <a href="#" class="project-link">View project →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- Contact ---------- -->
+  <section id="contact">
+    <div class="section-inner contact">
+      <div class="eyebrow reveal">Get in touch</div>
+      <h2 class="reveal">Let's build something together.</h2>
+      <p class="reveal">Have a project in mind, or just want to say hello? My inbox is always open.</p>
+      <a href="mailto:hello@yourname.com" class="contact-email reveal">hello@yourname.com</a>
+
+      <ul class="socials reveal">
+        <li><a href="#" aria-label="GitHub">GH</a></li>
+        <li><a href="#" aria-label="LinkedIn">IN</a></li>
+        <li><a href="#" aria-label="Twitter / X">X</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    &copy; <span id="year"></span> Your Name. Built with curiosity.
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    // ---------- Footer year ----------
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ---------- Smooth start button ----------
+    document.getElementById('start-btn').addEventListener('click', function(){
+      document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // ---------- Nav background on scroll ----------
+    var nav = document.getElementById('nav');
+    window.addEventListener('scroll', function(){
+      if (window.scrollY > 40) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    });
+
+    // ---------- Scroll reveal ----------
+    var revealEls = document.querySelectorAll('.reveal');
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(function(el){ observer.observe(el); });
+
+    // ---------- 3D animated background ----------
+    (function(){
+      var canvas = document.getElementById('bg-canvas');
+      var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.z = 18;
+
+      // Soft directional light for a bit of shading on the shapes
+      var light = new THREE.DirectionalLight(0xffffff, 0.9);
+      light.position.set(5, 8, 10);
+      scene.add(light);
+      scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+
+      var palette = [0xb98a5e, 0x7c8a75, 0x8493a8, 0xa97c8a];
+      var geometries = [
+        new THREE.IcosahedronGeometry(1, 0),
+        new THREE.OctahedronGeometry(1, 0),
+        new THREE.TorusGeometry(0.8, 0.28, 12, 32),
+        new THREE.TetrahedronGeometry(1, 0)
+      ];
+
+      var shapes = [];
+      var shapeCount = window.innerWidth < 600 ? 10 : 18;
+
+      for (var i = 0; i < shapeCount; i++){
+        var geo = geometries[i % geometries.length];
+        var color = palette[i % palette.length];
+
+        var mat = new THREE.MeshStandardMaterial({
+          color: color,
+          metalness: 0.1,
+          roughness: 0.45,
+          transparent: true,
+          opacity: 0.38,
+          wireframe: Math.random() > 0.5
+        });
+
+        var mesh = new THREE.Mesh(geo, mat);
+        var spread = 22;
+        // Keep a clear gap around the horizontal center so hero text
+        // and section headings never sit directly behind a shape.
+        var xSign = i % 2 === 0 ? 1 : -1;
+        mesh.position.set(
+          xSign * (2.5 + Math.random() * (spread / 2)),
+          (Math.random() - 0.5) * spread * 0.7,
+          (Math.random() - 0.5) * 10 - 6
+        );
+        var scale = 0.6 + Math.random() * 1.4;
+        mesh.scale.setScalar(scale);
+        mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+
+        mesh.userData.rotSpeed = {
+          x: (Math.random() - 0.5) * 0.006,
+          y: (Math.random() - 0.5) * 0.006
+        };
+        mesh.userData.floatOffset = Math.random() * Math.PI * 2;
+        mesh.userData.floatSpeed = 0.3 + Math.random() * 0.4;
+        mesh.userData.baseY = mesh.position.y;
+
+        scene.add(mesh);
+        shapes.push(mesh);
+      }
+
+      var mouseX = 0, mouseY = 0;
+      var targetRotX = 0, targetRotY = 0;
+
+      window.addEventListener('mousemove', function(e){
+        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+        mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+      });
+
+      var scrollFactor = 0;
+      window.addEventListener('scroll', function(){
+        scrollFactor = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+      });
+
+      window.addEventListener('resize', function(){
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      var clock = new THREE.Clock();
+      var isVisible = true;
+      document.addEventListener('visibilitychange', function(){
+        isVisible = !document.hidden;
+      });
+
+      function animate(){
+        requestAnimationFrame(animate);
+        if (!isVisible) return;
+
+        var t = clock.getElapsedTime();
+
+        shapes.forEach(function(mesh){
+          if (!prefersReducedMotion){
+            mesh.rotation.x += mesh.userData.rotSpeed.x;
+            mesh.rotation.y += mesh.userData.rotSpeed.y;
+            mesh.position.y = mesh.userData.baseY + Math.sin(t * mesh.userData.floatSpeed + mesh.userData.floatOffset) * 0.5;
+          }
+        });
+
+        targetRotY += (mouseX * 0.3 - targetRotY) * 0.03;
+        targetRotX += (mouseY * 0.2 - targetRotX) * 0.03;
+        scene.rotation.y = targetRotY;
+        scene.rotation.x = -targetRotX + scrollFactor * 0.4;
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+    })();
+  </script>
 </body>
 </html>
