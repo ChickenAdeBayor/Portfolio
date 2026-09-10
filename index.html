@@ -745,27 +745,29 @@
       }
 
       // The real steps/services a workflow like this actually connects.
-      // Branded steps use each service's real logo color (a small, single
-      // accent dot rather than a full-color chip) so the chip is
-      // recognizable at a glance; generic/non-branded steps stay in the
-      // page's neutral slate palette.
+      // Every chip's dot is a real (or the most iconic representative)
+      // brand color — named services use their own logo color; generic
+      // workflow concepts borrow the color of the tool most associated
+      // with them (Postgres for "Database", Salesforce for "CRM", Postman
+      // for "HTTP") so nothing falls back to a flat neutral gray.
       var steps = [
-        { label: 'Webhook', color: '#2C3E50' },
-        { label: 'Schedule', color: '#34495E' },
+        { label: 'Webhook', color: '#06B6D4' },
+        { label: 'Schedule', color: '#F59E0B' },
         { label: 'OpenAI', color: '#10A37F' },
         { label: 'GPT-4', color: '#10A37F' },
         { label: 'Slack', color: '#4A154B' },
         { label: 'Gmail', color: '#EA4335' },
         { label: 'Sheets', color: '#0F9D58' },
-        { label: 'CRM', color: '#7F8C8D' },
-        { label: 'Filter', color: '#5B6B74' },
-        { label: 'Database', color: '#34495E' },
+        { label: 'CRM', color: '#00A1E0' },
+        { label: 'Filter', color: '#8B5CF6' },
+        { label: 'Database', color: '#336791' },
         { label: 'Airtable', color: '#2D7FF9' },
-        { label: 'HTTP', color: '#7F8C8D' },
+        { label: 'HTTP', color: '#FF6C37' },
         { label: 'n8n', color: '#FF6D5A' },
         { label: 'Zapier', color: '#FF4A00' },
         { label: 'Make', color: '#6D00CC' },
-        { label: 'If / Else', color: '#5B6B74' }
+        { label: 'If / Else', color: '#EC4899' },
+        { label: 'HighLevel', color: '#00C2CB' }
       ];
 
       var isMobile = window.innerWidth < 600;
@@ -803,33 +805,74 @@
         chips.push(sprite);
       });
 
-      // Connections: each chip links to its 1-2 nearest neighbors, as a
-      // gently curved bezier (the shape workflow-canvas connectors use).
+      // Connections follow a curated set of real automation relationships
+      // — trigger -> logic -> AI -> data/integration -> platform — instead
+      // of pure geometric proximity, so the graph reads as an actual
+      // workflow rather than whichever chips happened to land nearby.
+      var relationships = [
+        ['Webhook', 'Filter'],
+        ['Filter', 'If / Else'],
+        ['If / Else', 'OpenAI'],
+        ['OpenAI', 'GPT-4'],
+        ['GPT-4', 'Slack'],
+        ['GPT-4', 'Gmail'],
+        ['Schedule', 'HTTP'],
+        ['HTTP', 'Database'],
+        ['Database', 'Sheets'],
+        ['Sheets', 'Airtable'],
+        ['Airtable', 'CRM'],
+        ['CRM', 'HighLevel'],
+        ['Zapier', 'Gmail'],
+        ['Zapier', 'Slack'],
+        ['Make', 'Airtable'],
+        ['Make', 'Sheets'],
+        ['n8n', 'Webhook'],
+        ['n8n', 'Database']
+      ];
+
+      var indexByLabel = {};
+      shuffled.forEach(function(step, i){ indexByLabel[step.label] = i; });
+
       var edgeSet = {};
       var edges = [];
+      var connectionCount = chips.map(function(){ return 0; });
+
+      function addEdge(i, j){
+        var key = Math.min(i, j) + '-' + Math.max(i, j);
+        if (edgeSet[key]) return;
+        edgeSet[key] = true;
+        var arcSign = Math.random() < 0.5 ? -1 : 1;
+        var arcAmount = 0.25 + Math.random() * 0.35;
+        edges.push({
+          a: i,
+          b: j,
+          curve: new THREE.QuadraticBezierCurve3(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()),
+          arcSign: arcSign,
+          arcAmount: arcAmount,
+          line: null
+        });
+        connectionCount[i]++;
+        connectionCount[j]++;
+      }
+
+      relationships.forEach(function(pair){
+        var i = indexByLabel[pair[0]];
+        var j = indexByLabel[pair[1]];
+        if (i !== undefined && j !== undefined){
+          addEdge(i, j);
+        }
+      });
+
+      // A random subset of steps won't always include both ends of every
+      // curated pair above — whatever's left unconnected still gets
+      // linked to its nearest chip so nothing floats in isolation.
       chips.forEach(function(sprite, i){
+        if (connectionCount[i] > 0) return;
         var distances = chips.map(function(other, j){
           return { j: j, d: i === j ? Infinity : sprite.position.distanceTo(other.position) };
         });
         distances.sort(function(a, b){ return a.d - b.d; });
-        var connections = 1 + Math.floor(Math.random() * 2);
-        for (var k = 0; k < connections; k++){
-          var j = distances[k].j;
-          var key = Math.min(i, j) + '-' + Math.max(i, j);
-          if (!edgeSet[key]){
-            edgeSet[key] = true;
-            var arcSign = Math.random() < 0.5 ? -1 : 1;
-            var arcAmount = 0.25 + Math.random() * 0.35;
-            edges.push({
-              a: i,
-              b: j,
-              curve: new THREE.QuadraticBezierCurve3(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()),
-              arcSign: arcSign,
-              arcAmount: arcAmount,
-              line: null
-            });
-          }
-        }
+        if (distances.length) addEdge(i, distances[0].j);
       });
 
       var lineMat = new THREE.LineBasicMaterial({ color: 0xBDC3C7, transparent: true, opacity: 0.45 });
