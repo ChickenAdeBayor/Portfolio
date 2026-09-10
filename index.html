@@ -7,17 +7,18 @@
 <meta name="description" content="Portfolio of Primo Alota Jr — AI Automation Engineer.">
 <style>
   :root{
-    --bg: #faf6ef;
-    --bg-alt: #f2ece1;
-    --ink: #2f2a22;
-    --ink-soft: #6b6357;
+    /* Flat, cool slate palette: Midnight Blue -> Wet Asphalt -> Concrete -> Silver -> Clouds */
+    --bg: #ECF0F1;
+    --bg-alt: #BDC3C7;
+    --ink: #2C3E50;
+    --ink-soft: #34495E;
     --card: #ffffff;
-    --accent: #b98a5e;
-    --accent-2: #7c8a75;
-    --accent-3: #8493a8;
-    --signal: #4fb3a8;
-    --border: rgba(47,42,34,0.08);
-    --shadow: 0 10px 30px rgba(47,42,34,0.08);
+    --accent: #34495E;
+    --accent-2: #7F8C8D;
+    --accent-3: #BDC3C7;
+    --signal: #2C3E50;
+    --border: rgba(44,62,80,0.14);
+    --shadow: 0 10px 30px rgba(44,62,80,0.14);
   }
 
   *{ box-sizing: border-box; }
@@ -62,13 +63,13 @@
     align-items: center;
     justify-content: space-between;
     padding: 22px 6vw;
-    background: rgba(250, 246, 239, 0);
+    background: rgba(236, 240, 241, 0);
     transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
     pointer-events: none;
   }
 
   .nav.scrolled{
-    background: rgba(250, 246, 239, 0.85);
+    background: rgba(236, 240, 241, 0.85);
     backdrop-filter: blur(10px);
     box-shadow: 0 1px 0 var(--border);
     padding: 14px 6vw;
@@ -126,7 +127,7 @@
   section#about,
   section#projects,
   section#contact{
-    background: rgba(250, 246, 239, 0.82);
+    background: rgba(236, 240, 241, 0.82);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
   }
@@ -212,7 +213,7 @@
   }
 
   .start-btn:hover{
-    box-shadow: 0 14px 34px rgba(47,42,34,0.18);
+    box-shadow: 0 14px 34px rgba(44,62,80,0.18);
     transform: translateY(-2px);
     background: var(--accent);
   }
@@ -339,7 +340,7 @@
 
   .project-card:hover{
     transform: translateY(-6px);
-    box-shadow: 0 18px 40px rgba(47,42,34,0.14);
+    box-shadow: 0 18px 40px rgba(44,62,80,0.14);
   }
 
   .project-thumb{
@@ -353,10 +354,10 @@
     letter-spacing: 0.04em;
   }
 
-  .thumb-1{ background: linear-gradient(135deg, #b98a5e, #e3c9a8); }
-  .thumb-2{ background: linear-gradient(135deg, #7c8a75, #b7c4ae); }
-  .thumb-3{ background: linear-gradient(135deg, #8493a8, #c2cbd9); }
-  .thumb-4{ background: linear-gradient(135deg, #a97c8a, #d9b7c2); }
+  .thumb-1{ background: linear-gradient(135deg, #2C3E50, #4a6178); }
+  .thumb-2{ background: linear-gradient(135deg, #34495E, #5d7186); }
+  .thumb-3{ background: linear-gradient(135deg, #7F8C8D, #a9b4b4); }
+  .thumb-4{ background: linear-gradient(135deg, #5B6B74, #93a1a4); }
 
   .project-body{
     padding: 26px;
@@ -672,8 +673,7 @@
       var group = new THREE.Group();
       scene.add(group);
 
-      var signalColor = 'rgba(79,179,168,1)';
-      var inkColor = '#2f2a22';
+      var inkColor = '#2C3E50';
 
       function roundRectPath(ctx, x, y, w, h, r){
         ctx.beginPath();
@@ -708,7 +708,7 @@
         roundRectPath(ctx, 0.75, 0.75, width - 1.5, height - 1.5, height / 2 - 1);
         ctx.fillStyle = 'rgba(255,255,255,0.94)';
         ctx.fill();
-        ctx.strokeStyle = 'rgba(47,42,34,0.16)';
+        ctx.strokeStyle = 'rgba(44,62,80,0.16)';
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
@@ -727,6 +727,9 @@
         return { texture: texture, aspect: width / height };
       }
 
+      // A soft light-to-dark dot rather than an additive glow: against a
+      // light background an additive blend just washes out to white, so
+      // this composites normally and reads as a small solid data packet.
       function makeGlowTexture(){
         var size = 128;
         var c = document.createElement('canvas');
@@ -734,8 +737,8 @@
         var ctx = c.getContext('2d');
         var g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
         g.addColorStop(0, 'rgba(255,255,255,1)');
-        g.addColorStop(0.3, signalColor.replace('1)', '0.85)'));
-        g.addColorStop(1, signalColor.replace('1)', '0)'));
+        g.addColorStop(0.35, 'rgba(52,73,94,0.92)');
+        g.addColorStop(1, 'rgba(44,62,80,0)');
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, size, size);
         return new THREE.CanvasTexture(c);
@@ -743,22 +746,22 @@
 
       // The real steps/services a workflow like this actually connects.
       var steps = [
-        { label: 'Webhook', color: '#4fb3a8' },
-        { label: 'Schedule', color: '#4fb3a8' },
-        { label: 'OpenAI', color: '#b98a5e' },
-        { label: 'GPT-4', color: '#b98a5e' },
-        { label: 'Slack', color: '#8493a8' },
-        { label: 'Gmail', color: '#a97c8a' },
-        { label: 'Sheets', color: '#7c8a75' },
-        { label: 'CRM', color: '#8493a8' },
-        { label: 'Filter', color: '#b98a5e' },
-        { label: 'Database', color: '#7c8a75' },
-        { label: 'Airtable', color: '#b98a5e' },
-        { label: 'HTTP', color: '#8493a8' },
-        { label: 'n8n', color: '#7c8a75' },
-        { label: 'Zapier', color: '#a97c8a' },
-        { label: 'Make', color: '#8493a8' },
-        { label: 'If / Else', color: '#a97c8a' }
+        { label: 'Webhook', color: '#2C3E50' },
+        { label: 'Schedule', color: '#2C3E50' },
+        { label: 'OpenAI', color: '#2C3E50' },
+        { label: 'GPT-4', color: '#2C3E50' },
+        { label: 'Slack', color: '#7F8C8D' },
+        { label: 'Gmail', color: '#5B6B74' },
+        { label: 'Sheets', color: '#34495E' },
+        { label: 'CRM', color: '#7F8C8D' },
+        { label: 'Filter', color: '#2C3E50' },
+        { label: 'Database', color: '#34495E' },
+        { label: 'Airtable', color: '#2C3E50' },
+        { label: 'HTTP', color: '#7F8C8D' },
+        { label: 'n8n', color: '#34495E' },
+        { label: 'Zapier', color: '#5B6B74' },
+        { label: 'Make', color: '#7F8C8D' },
+        { label: 'If / Else', color: '#5B6B74' }
       ];
 
       var isMobile = window.innerWidth < 600;
@@ -825,7 +828,7 @@
         }
       });
 
-      var lineMat = new THREE.LineBasicMaterial({ color: 0xb9ac98, transparent: true, opacity: 0.32 });
+      var lineMat = new THREE.LineBasicMaterial({ color: 0xBDC3C7, transparent: true, opacity: 0.45 });
       var curveSegments = 16;
       edges.forEach(function(edge){
         var geo = new THREE.BufferGeometry();
@@ -867,7 +870,6 @@
           map: glowTexture,
           transparent: true,
           opacity: 0.95,
-          blending: THREE.AdditiveBlending,
           depthWrite: false
         });
         var sprite = new THREE.Sprite(mat);
