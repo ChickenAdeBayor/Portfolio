@@ -4,49 +4,939 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portfolio</title>
+<meta name="description" content="Portfolio of Your Name — AI Automation Engineer.">
 <style>
+  :root{
+    --bg: #faf6ef;
+    --bg-alt: #f2ece1;
+    --ink: #2f2a22;
+    --ink-soft: #6b6357;
+    --card: #ffffff;
+    --accent: #b98a5e;
+    --accent-2: #7c8a75;
+    --accent-3: #8493a8;
+    --signal: #4fb3a8;
+    --border: rgba(47,42,34,0.08);
+    --shadow: 0 10px 30px rgba(47,42,34,0.08);
+  }
+
   *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
 
   html, body{
     margin: 0;
-    height: 100%;
-    background: #ffffff;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    overflow-x: hidden;
   }
 
-  body{
+  h1, h2, h3{
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  a{ color: inherit; }
+
+  /* ---------- 3D background canvas ---------- */
+  #bg-canvas{
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    display: block;
+  }
+
+  /* ---------- Nav ---------- */
+  .nav{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    padding: 22px 6vw;
+    background: rgba(250, 246, 239, 0);
+    transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
+    pointer-events: none;
+  }
+
+  .nav.scrolled{
+    background: rgba(250, 246, 239, 0.85);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 1px 0 var(--border);
+    padding: 14px 6vw;
+  }
+
+  .nav *{ pointer-events: auto; }
+
+  .nav-logo{
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.04em;
+  }
+
+  .nav-links{
+    display: flex;
+    gap: 32px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-links a{
+    text-decoration: none;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+    transition: color 0.2s ease;
+    position: relative;
+  }
+
+  .nav-links a:hover{ color: var(--ink); }
+
+  .nav-links a::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width 0.25s ease;
+  }
+
+  .nav-links a:hover::after{ width: 100%; }
+
+  /* ---------- Sections shared ---------- */
+  section{
+    position: relative;
+    z-index: 1;
+    padding: 140px 6vw;
+  }
+
+  /* Frosted panel behind content sections so the 3D background stays
+     visible as soft ambient motion without fighting with text legibility. */
+  section#about,
+  section#projects,
+  section#contact{
+    background: rgba(250, 246, 239, 0.82);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  .section-inner{
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .eyebrow{
+    display: inline-block;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+
+  .reveal{
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.is-visible{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ---------- Hero / Splash ---------- */
+  .hero{
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    font-family: Georgia, 'Times New Roman', serif;
+    text-align: center;
+    padding: 0 6vw;
+    z-index: 1;
+  }
+
+  .hero-kicker{
+    font-size: 0.85rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 22px;
+  }
+
+  .hero h1{
+    font-size: clamp(2.6rem, 7vw, 5.2rem);
+    line-height: 1.05;
+    color: var(--ink);
+  }
+
+  .hero h1 span{
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .hero p{
+    margin-top: 22px;
+    max-width: 560px;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--ink-soft);
   }
 
   .start-btn{
-    padding: 38px 200px;
-    font-size: 20 rem;
-    font-weight: 800;
-    color: #4a4438;
-    background: #faf6ef;
+    margin-top: 44px;
+    padding: 22px 64px;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    color: var(--card);
+    background: var(--ink);
     border: none;
     border-radius: 999px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow);
     cursor: pointer;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    transition: box-shadow 0.25s ease, transform 0.25s ease, background 0.25s ease;
   }
 
   .start-btn:hover{
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-    transform: translateY(-1px);
+    box-shadow: 0 14px 34px rgba(47,42,34,0.18);
+    transform: translateY(-2px);
+    background: var(--accent);
   }
 
   .start-btn:active{
     transform: translateY(0);
-    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  }
+
+  .scroll-cue{
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.8;
+  }
+
+  .scroll-cue .line{
+    width: 1px;
+    height: 34px;
+    background: linear-gradient(var(--ink-soft), transparent);
+    animation: scrollPulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse{
+    0%{ transform: scaleY(0.3); opacity: 0.3; }
+    50%{ transform: scaleY(1); opacity: 1; }
+    100%{ transform: scaleY(0.3); opacity: 0.3; }
+  }
+
+  /* ---------- About ---------- */
+  .about-grid{
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .avatar{
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-3));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, serif;
+    font-size: 3.2rem;
+    color: var(--card);
+    box-shadow: var(--shadow);
+  }
+
+  .about-text h2{
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin-bottom: 22px;
+  }
+
+  .about-text p{
+    color: var(--ink-soft);
+    line-height: 1.8;
+    font-size: 1.02rem;
+    margin-bottom: 16px;
+  }
+
+  .skills{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 26px;
+    list-style: none;
+    padding: 0;
+  }
+
+  .skills li{
+    padding: 8px 18px;
+    border-radius: 999px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--ink);
+  }
+
+  /* ---------- Projects ---------- */
+  .section-head{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .section-head h2{
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+  }
+
+  .section-head p{
+    color: var(--ink-soft);
+    max-width: 360px;
+    line-height: 1.6;
+  }
+
+  .projects-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+  }
+
+  .project-card{
+    background: var(--card);
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .project-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(47,42,34,0.14);
+  }
+
+  .project-thumb{
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, serif;
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.04em;
+  }
+
+  .thumb-1{ background: linear-gradient(135deg, #b98a5e, #e3c9a8); }
+  .thumb-2{ background: linear-gradient(135deg, #7c8a75, #b7c4ae); }
+  .thumb-3{ background: linear-gradient(135deg, #8493a8, #c2cbd9); }
+  .thumb-4{ background: linear-gradient(135deg, #a97c8a, #d9b7c2); }
+
+  .project-body{
+    padding: 26px;
+  }
+
+  .project-body h3{
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  .project-body p{
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .tags{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .tags span{
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--bg-alt);
+    color: var(--ink-soft);
+  }
+
+  .project-link{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .project-link:hover{
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ---------- Contact ---------- */
+  .contact{
+    text-align: center;
+  }
+
+  .contact h2{
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    margin-bottom: 18px;
+  }
+
+  .contact p{
+    color: var(--ink-soft);
+    max-width: 520px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+
+  .contact-email{
+    display: inline-block;
+    font-family: Georgia, serif;
+    font-size: clamp(1.3rem, 3.4vw, 2rem);
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 6px;
+    margin-bottom: 40px;
+    transition: color 0.2s ease;
+  }
+
+  .contact-email:hover{ color: var(--accent); }
+
+  .socials{
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    margin-top: 36px;
+    list-style: none;
+    padding: 0;
+  }
+
+  .socials a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    font-size: 0.82rem;
+    color: var(--ink);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+  }
+
+  .socials a:hover{
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+    color: var(--accent);
+  }
+
+  footer{
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 30px 6vw 46px;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 720px){
+    .about-grid{
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .avatar{ margin: 0 auto; }
+    .skills{ justify-content: center; }
+    .nav-links{ gap: 18px; }
+    section{ padding: 100px 6vw; }
+  }
+
+  @media (max-width: 520px){
+    .nav-links{ display: none; }
   }
 </style>
 </head>
 <body>
 
-  <button class="start-btn">Let's start</button>
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
+  <nav class="nav" id="nav">
+    <div class="nav-logo">Your Name</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ---------- Hero / Splash ---------- -->
+  <section class="hero" id="hero">
+    <div class="hero-kicker">AI Automation Engineer</div>
+    <h1>Hi, I'm <span>Your Name</span></h1>
+    <p>I design and build AI-powered automations that connect your tools, cut out manual work, and let your business run itself. Replace this tagline with your own introduction.</p>
+    <button class="start-btn" id="start-btn">Let's start</button>
+
+    <div class="scroll-cue">
+      <span>Scroll</span>
+      <span class="line"></span>
+    </div>
+  </section>
+
+  <!-- ---------- About ---------- -->
+  <section id="about">
+    <div class="section-inner about-grid">
+      <div class="avatar reveal">YN</div>
+      <div class="about-text">
+        <div class="eyebrow reveal">About</div>
+        <h2 class="reveal">I build the automations behind the scenes.</h2>
+        <p class="reveal">
+          Replace this paragraph with your own story. I specialize in AI automation — connecting apps, APIs, and
+          language models into workflows that save teams hours every week. From lead pipelines to AI support agents,
+          I turn repetitive manual processes into systems that run themselves.
+        </p>
+        <p class="reveal">
+          Add a second paragraph if needed: your automation philosophy, favorite tools, or a metric of
+          impact — hours saved, workflows shipped, or businesses automated.
+        </p>
+        <ul class="skills reveal">
+          <li>n8n</li>
+          <li>Zapier</li>
+          <li>Make.com</li>
+          <li>Python</li>
+          <li>OpenAI API</li>
+          <li>LangChain</li>
+          <li>Webhooks &amp; REST APIs</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- Projects ---------- -->
+  <section id="projects">
+    <div class="section-inner">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow reveal">Work</div>
+          <h2 class="reveal">Selected Projects</h2>
+        </div>
+        <p class="reveal">A few automations I've shipped recently. Swap these cards with your real projects, screenshots, and links.</p>
+      </div>
+
+      <div class="projects-grid">
+        <article class="project-card reveal">
+          <div class="project-thumb thumb-1">AI Agent</div>
+          <div class="project-body">
+            <h3>AI Support Agent</h3>
+            <p>An AI-powered agent that triages and resolves customer support tickets automatically, escalating only what actually needs a human.</p>
+            <div class="tags"><span>OpenAI API</span><span>n8n</span><span>Zendesk</span></div>
+            <a href="#" class="project-link">View project →</a>
+          </div>
+        </article>
+
+        <article class="project-card reveal">
+          <div class="project-thumb thumb-2">Lead Pipeline</div>
+          <div class="project-body">
+            <h3>Lead Enrichment Pipeline</h3>
+            <p>Automated pipeline that enriches inbound leads with company data and routes each one to the right sales rep in real time.</p>
+            <div class="tags"><span>Make.com</span><span>Clearbit</span><span>Google Sheets</span></div>
+            <a href="#" class="project-link">View project →</a>
+          </div>
+        </article>
+
+        <article class="project-card reveal">
+          <div class="project-thumb thumb-3">Invoice AI</div>
+          <div class="project-body">
+            <h3>Invoice Processing Automation</h3>
+            <p>Extracts line items from incoming invoices with AI and syncs them straight into the accounting system — no manual entry.</p>
+            <div class="tags"><span>Python</span><span>GPT-4 Vision</span><span>QuickBooks API</span></div>
+            <a href="#" class="project-link">View project →</a>
+          </div>
+        </article>
+
+        <article class="project-card reveal">
+          <div class="project-thumb thumb-4">Slack Sync</div>
+          <div class="project-body">
+            <h3>Slack + CRM Sync</h3>
+            <p>Keeps Slack and the CRM in sync automatically, so deal updates and customer messages never fall through the cracks.</p>
+            <div class="tags"><span>Zapier</span><span>Slack API</span><span>HubSpot</span></div>
+            <a href="#" class="project-link">View project →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- Contact ---------- -->
+  <section id="contact">
+    <div class="section-inner contact">
+      <div class="eyebrow reveal">Get in touch</div>
+      <h2 class="reveal">Let's build something together.</h2>
+      <p class="reveal">Have a project in mind, or just want to say hello? My inbox is always open.</p>
+      <a href="mailto:hello@yourname.com" class="contact-email reveal">hello@yourname.com</a>
+
+      <ul class="socials reveal">
+        <li><a href="#" aria-label="GitHub">GH</a></li>
+        <li><a href="#" aria-label="LinkedIn">IN</a></li>
+        <li><a href="#" aria-label="Twitter / X">X</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    &copy; <span id="year"></span> Your Name. Built with curiosity.
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    // ---------- Footer year ----------
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ---------- Smooth start button ----------
+    document.getElementById('start-btn').addEventListener('click', function(){
+      document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // ---------- Nav background on scroll ----------
+    var nav = document.getElementById('nav');
+    window.addEventListener('scroll', function(){
+      if (window.scrollY > 40) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    });
+
+    // ---------- Scroll reveal ----------
+    var revealEls = document.querySelectorAll('.reveal');
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(function(el){ observer.observe(el); });
+
+    // ---------- 3D animated background: an automation workflow canvas ----------
+    // Labeled step "chips" (the real apps/services a workflow connects) linked
+    // by curved connectors, with glowing packets traveling along them — this
+    // is meant to read as an actual automation graph, like the canvas inside
+    // n8n / Zapier / Make, rather than a generic abstract network.
+    (function(){
+      var canvas = document.getElementById('bg-canvas');
+      var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.z = 20;
+
+      var group = new THREE.Group();
+      scene.add(group);
+
+      var signalColor = 'rgba(79,179,168,1)';
+      var inkColor = '#2f2a22';
+
+      function roundRectPath(ctx, x, y, w, h, r){
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      }
+
+      // Draws a small rounded "step" chip (dot + label) to a canvas texture,
+      // the same visual grammar automation-builder canvases use for nodes.
+      function makeChipTexture(label, dotColor){
+        var res = 3;
+        var fontSize = 26;
+        var paddingX = 20;
+        var height = 64;
+        var dotSize = 13;
+
+        var measure = document.createElement('canvas').getContext('2d');
+        measure.font = '600 ' + fontSize + 'px "Helvetica Neue", Arial, sans-serif';
+        var textWidth = measure.measureText(label).width;
+        var width = Math.ceil(textWidth + paddingX * 2 + dotSize + 14);
+
+        var c = document.createElement('canvas');
+        c.width = width * res;
+        c.height = height * res;
+        var ctx = c.getContext('2d');
+        ctx.scale(res, res);
+
+        roundRectPath(ctx, 0.75, 0.75, width - 1.5, height - 1.5, height / 2 - 1);
+        ctx.fillStyle = 'rgba(255,255,255,0.94)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(47,42,34,0.16)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.fillStyle = dotColor;
+        ctx.arc(paddingX / 1.4, height / 2, dotSize / 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = inkColor;
+        ctx.font = '600 ' + fontSize + 'px "Helvetica Neue", Arial, sans-serif';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, paddingX / 1.4 + dotSize + 10, height / 2 + 1);
+
+        var texture = new THREE.CanvasTexture(c);
+        texture.anisotropy = 4;
+        return { texture: texture, aspect: width / height };
+      }
+
+      function makeGlowTexture(){
+        var size = 128;
+        var c = document.createElement('canvas');
+        c.width = c.height = size;
+        var ctx = c.getContext('2d');
+        var g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+        g.addColorStop(0, 'rgba(255,255,255,1)');
+        g.addColorStop(0.3, signalColor.replace('1)', '0.85)'));
+        g.addColorStop(1, signalColor.replace('1)', '0)'));
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, size, size);
+        return new THREE.CanvasTexture(c);
+      }
+
+      // The real steps/services a workflow like this actually connects.
+      var steps = [
+        { label: 'Webhook', color: '#4fb3a8' },
+        { label: 'Schedule', color: '#4fb3a8' },
+        { label: 'OpenAI', color: '#b98a5e' },
+        { label: 'GPT-4', color: '#b98a5e' },
+        { label: 'Slack', color: '#8493a8' },
+        { label: 'Gmail', color: '#a97c8a' },
+        { label: 'Sheets', color: '#7c8a75' },
+        { label: 'CRM', color: '#8493a8' },
+        { label: 'Filter', color: '#b98a5e' },
+        { label: 'Database', color: '#7c8a75' },
+        { label: 'Airtable', color: '#b98a5e' },
+        { label: 'HTTP', color: '#8493a8' },
+        { label: 'n8n', color: '#7c8a75' },
+        { label: 'Zapier', color: '#a97c8a' },
+        { label: 'Make', color: '#8493a8' },
+        { label: 'If / Else', color: '#a97c8a' }
+      ];
+
+      var isMobile = window.innerWidth < 600;
+      var stepCount = isMobile ? 8 : 14;
+      var shuffled = steps.slice().sort(function(){ return Math.random() - 0.5; }).slice(0, stepCount);
+
+      // Keep a wide horizontal gap around center clear of chips: at this
+      // camera distance the hero copy spans roughly world-x -7 to +7, and
+      // it has no frosted backdrop (unlike the sections below) to fall
+      // back on for legibility.
+      var minGapX = 7.5;
+      var hRange = 7;
+      var vRange = 9;
+      var chips = [];
+
+      shuffled.forEach(function(step, i){
+        var xSign = i % 2 === 0 ? 1 : -1;
+        var pos = new THREE.Vector3(
+          xSign * (minGapX + Math.random() * hRange),
+          (Math.random() - 0.5) * vRange * 2,
+          (Math.random() - 0.5) * 8 - 5
+        );
+
+        var chip = makeChipTexture(step.label, step.color);
+        var mat = new THREE.SpriteMaterial({ map: chip.texture, transparent: true, opacity: 0.95, depthWrite: false });
+        var sprite = new THREE.Sprite(mat);
+        var h = 1.05;
+        sprite.scale.set(h * chip.aspect, h, 1);
+        sprite.position.copy(pos);
+        sprite.userData.baseY = pos.y;
+        sprite.userData.floatOffset = Math.random() * Math.PI * 2;
+        sprite.userData.floatSpeed = 0.25 + Math.random() * 0.35;
+
+        group.add(sprite);
+        chips.push(sprite);
+      });
+
+      // Connections: each chip links to its 1-2 nearest neighbors, as a
+      // gently curved bezier (the shape workflow-canvas connectors use).
+      var edgeSet = {};
+      var edges = [];
+      chips.forEach(function(sprite, i){
+        var distances = chips.map(function(other, j){
+          return { j: j, d: i === j ? Infinity : sprite.position.distanceTo(other.position) };
+        });
+        distances.sort(function(a, b){ return a.d - b.d; });
+        var connections = 1 + Math.floor(Math.random() * 2);
+        for (var k = 0; k < connections; k++){
+          var j = distances[k].j;
+          var key = Math.min(i, j) + '-' + Math.max(i, j);
+          if (!edgeSet[key]){
+            edgeSet[key] = true;
+            var arcSign = Math.random() < 0.5 ? -1 : 1;
+            var arcAmount = 0.25 + Math.random() * 0.35;
+            edges.push({
+              a: i,
+              b: j,
+              curve: new THREE.QuadraticBezierCurve3(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()),
+              arcSign: arcSign,
+              arcAmount: arcAmount,
+              line: null
+            });
+          }
+        }
+      });
+
+      var lineMat = new THREE.LineBasicMaterial({ color: 0xb9ac98, transparent: true, opacity: 0.32 });
+      var curveSegments = 16;
+      edges.forEach(function(edge){
+        var geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array((curveSegments + 1) * 3), 3));
+        edge.line = new THREE.Line(geo, lineMat);
+        group.add(edge.line);
+      });
+
+      function updateEdgeCurve(edge){
+        var a = chips[edge.a].position;
+        var b = chips[edge.b].position;
+        var mid = a.clone().add(b).multiplyScalar(0.5);
+        var dir = b.clone().sub(a);
+        var normal = new THREE.Vector3(-dir.y, dir.x, dir.z).normalize().multiplyScalar(dir.length() * edge.arcAmount * edge.arcSign);
+        var control = mid.add(normal);
+        edge.curve.v0.copy(a);
+        edge.curve.v1.copy(control);
+        edge.curve.v2.copy(b);
+        // getPointAt() (used by the traveling pulses) relies on a cached
+        // arc-length table that must be invalidated after moving the curve.
+        edge.curve.needsUpdate = true;
+
+        var points = edge.curve.getPoints(curveSegments);
+        var arr = edge.line.geometry.attributes.position.array;
+        points.forEach(function(p, idx){
+          arr[idx * 3] = p.x; arr[idx * 3 + 1] = p.y; arr[idx * 3 + 2] = p.z;
+        });
+        edge.line.geometry.attributes.position.needsUpdate = true;
+      }
+      edges.forEach(updateEdgeCurve);
+
+      // Glowing packets traveling along the connectors, like tasks moving
+      // through the automation.
+      var glowTexture = makeGlowTexture();
+      var pulseCount = Math.min(edges.length, isMobile ? 5 : 10);
+      var pulses = [];
+      for (var p = 0; p < pulseCount; p++){
+        var mat = new THREE.SpriteMaterial({
+          map: glowTexture,
+          transparent: true,
+          opacity: 0.95,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false
+        });
+        var sprite = new THREE.Sprite(mat);
+        sprite.scale.set(0.5, 0.5, 1);
+        sprite.userData.edge = edges[p % edges.length];
+        sprite.userData.t = Math.random();
+        sprite.userData.speed = 0.1 + Math.random() * 0.12;
+        group.add(sprite);
+        pulses.push(sprite);
+      }
+
+      var mouseX = 0, mouseY = 0;
+      var targetRotX = 0, targetRotY = 0;
+
+      window.addEventListener('mousemove', function(e){
+        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+        mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+      });
+
+      var scrollFactor = 0;
+      window.addEventListener('scroll', function(){
+        scrollFactor = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+      });
+
+      window.addEventListener('resize', function(){
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      var clock = new THREE.Clock();
+      var isVisible = true;
+      document.addEventListener('visibilitychange', function(){
+        isVisible = !document.hidden;
+      });
+
+      function animate(){
+        requestAnimationFrame(animate);
+        if (!isVisible) return;
+
+        var t = clock.getElapsedTime();
+        var delta = Math.min(clock.getDelta(), 0.05);
+
+        if (!prefersReducedMotion){
+          chips.forEach(function(sprite){
+            sprite.position.y = sprite.userData.baseY + Math.sin(t * sprite.userData.floatSpeed + sprite.userData.floatOffset) * 0.35;
+          });
+          edges.forEach(updateEdgeCurve);
+
+          pulses.forEach(function(sprite){
+            sprite.userData.t += delta * sprite.userData.speed;
+            if (sprite.userData.t >= 1){
+              sprite.userData.t = 0;
+              sprite.userData.edge = edges[Math.floor(Math.random() * edges.length)];
+            }
+            sprite.position.copy(sprite.userData.edge.curve.getPointAt(sprite.userData.t));
+          });
+        }
+
+        targetRotY += (mouseX * 0.3 - targetRotY) * 0.03;
+        targetRotX += (mouseY * 0.2 - targetRotX) * 0.03;
+        group.rotation.y = targetRotY;
+        group.rotation.x = -targetRotX + scrollFactor * 0.4;
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+    })();
+  </script>
 </body>
 </html>
