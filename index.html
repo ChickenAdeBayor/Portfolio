@@ -745,22 +745,26 @@
       }
 
       // The real steps/services a workflow like this actually connects.
+      // Branded steps use each service's real logo color (a small, single
+      // accent dot rather than a full-color chip) so the chip is
+      // recognizable at a glance; generic/non-branded steps stay in the
+      // page's neutral slate palette.
       var steps = [
         { label: 'Webhook', color: '#2C3E50' },
-        { label: 'Schedule', color: '#2C3E50' },
-        { label: 'OpenAI', color: '#2C3E50' },
-        { label: 'GPT-4', color: '#2C3E50' },
-        { label: 'Slack', color: '#7F8C8D' },
-        { label: 'Gmail', color: '#5B6B74' },
-        { label: 'Sheets', color: '#34495E' },
+        { label: 'Schedule', color: '#34495E' },
+        { label: 'OpenAI', color: '#10A37F' },
+        { label: 'GPT-4', color: '#10A37F' },
+        { label: 'Slack', color: '#4A154B' },
+        { label: 'Gmail', color: '#EA4335' },
+        { label: 'Sheets', color: '#0F9D58' },
         { label: 'CRM', color: '#7F8C8D' },
-        { label: 'Filter', color: '#2C3E50' },
+        { label: 'Filter', color: '#5B6B74' },
         { label: 'Database', color: '#34495E' },
-        { label: 'Airtable', color: '#2C3E50' },
+        { label: 'Airtable', color: '#2D7FF9' },
         { label: 'HTTP', color: '#7F8C8D' },
-        { label: 'n8n', color: '#34495E' },
-        { label: 'Zapier', color: '#5B6B74' },
-        { label: 'Make', color: '#7F8C8D' },
+        { label: 'n8n', color: '#FF6D5A' },
+        { label: 'Zapier', color: '#FF4A00' },
+        { label: 'Make', color: '#6D00CC' },
         { label: 'If / Else', color: '#5B6B74' }
       ];
 
