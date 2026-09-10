@@ -157,17 +157,6 @@
     transform: translateY(0);
   }
 
-  /* Avatar gets its own accent entrance — a soft scale "pop" — while the
-     surrounding About text keeps the plain fade above. */
-  .avatar.reveal{
-    transform: scale(0.7);
-    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  .avatar.reveal.is-visible{
-    transform: scale(1);
-  }
-
   /* ---------- Hero / Splash ---------- */
   .hero{
     position: relative;
@@ -558,20 +547,20 @@
   <!-- ---------- About ---------- -->
   <section id="about">
     <div class="section-inner about-grid">
-      <div class="avatar reveal">PA</div>
+      <div class="avatar">PA</div>
       <div class="about-text">
-        <div class="eyebrow reveal">About</div>
-        <h2 class="reveal">I build the automations behind the scenes.</h2>
-        <p class="reveal">
+        <div class="eyebrow">About</div>
+        <h2>I build the automations behind the scenes.</h2>
+        <p>
           Replace this paragraph with your own story. I specialize in AI automation — connecting apps, APIs, and
           language models into workflows that save teams hours every week. From lead pipelines to AI support agents,
           I turn repetitive manual processes into systems that run themselves.
         </p>
-        <p class="reveal">
+        <p>
           Add a second paragraph if needed: your automation philosophy, favorite tools, or a metric of
           impact — hours saved, workflows shipped, or businesses automated.
         </p>
-        <ul class="skills reveal">
+        <ul class="skills">
           <li>n8n</li>
           <li>Zapier</li>
           <li>Make.com</li>
