@@ -653,16 +653,7 @@
     // ---------- Footer year ----------
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // ---------- Start button: About flies in over the current view ----------
-    // Rather than scrolling to About (which exposes an empty stretch of
-    // leftover hero space while the camera is mid-dive), the whole About
-    // panel is temporarily overlaid directly on top of the viewport and
-    // grown in from small/transparent to full size, synced with the
-    // camera's dive. Once it matches, the page silently jumps to About's
-    // real scroll position and the overlay is removed — invisible, since
-    // by then the two look identical. Net effect: one continuous flight
-    // forward, with About arriving from the distance, rather than a zoom,
-    // a jump-cut, and a separate scroll.
+    // ---------- Start button: zoom into the 3D scene, then land on About ----------
     document.getElementById('start-btn').addEventListener('click', function(){
       var hero = document.getElementById('hero');
       var about = document.getElementById('about');
@@ -673,61 +664,15 @@
         return;
       }
 
-      var duration = 1150;
-      // Measured before touching any styles below, while About still sits
-      // in its normal document-flow position.
-      var naturalOffsetTop = about.getBoundingClientRect().top + window.scrollY;
-
       hero.classList.add('zooming');
-
-      // Skip the individual scroll-triggered reveals for this entrance —
-      // they'd fight with the panel-level animation below — and instead
-      // let the whole panel carry the motion.
-      about.querySelectorAll('.reveal').forEach(function(el){
-        el.classList.add('is-visible');
-        revealObserver.unobserve(el);
-      });
-
-      about.style.position = 'fixed';
-      about.style.top = '0';
-      about.style.left = '0';
-      about.style.width = '100%';
-      about.style.zIndex = '20';
-      about.style.transition = 'none';
-      about.style.opacity = '0';
-      // Starts small and far below its landing spot: with a lot of ground
-      // to visibly cover, plus a near-linear easing, the growth reads as
-      // sustained motion across most of the duration instead of resolving
-      // in the first fifth of it.
-      about.style.transform = 'scale(0.16) translateY(140px)';
-      // Force a reflow so the browser registers that start state before
-      // the transition below is applied — otherwise it would just snap.
-      void about.offsetWidth;
-      about.style.transition = 'opacity ' + duration + 'ms cubic-bezier(0.11, 0, 0.28, 1), ' +
-        'transform ' + duration + 'ms cubic-bezier(0.11, 0, 0.28, 1)';
-      about.style.opacity = '1';
-      about.style.transform = 'scale(1) translateY(0)';
-
-      // Camera: accelerating dive through the workflow chips (ease-in),
-      // same duration as About's arrival above.
-      window.__zoomIntoScene(duration, function(){
+      window.__zoomIntoScene(850, function(){
+        about.scrollIntoView({ behavior: 'smooth' });
+        // The About section's frosted panel hides this reset, so the
+        // camera is ready to zoom again next time without a visible cut.
         setTimeout(function(){
-          // Swap from the overlay to About's real position, invisibly (it
-          // already looks identical at this point), then clean up every
-          // inline style so About behaves like a normal static section
-          // again — e.g. if the visitor returns here via the nav link.
-          window.scrollTo({ top: naturalOffsetTop, behavior: 'auto' });
-          about.style.position = '';
-          about.style.top = '';
-          about.style.left = '';
-          about.style.width = '';
-          about.style.zIndex = '';
-          about.style.transition = '';
-          about.style.opacity = '';
-          about.style.transform = '';
           window.__resetSceneZoom();
           hero.classList.remove('zooming');
-        }, 60);
+        }, 700);
       });
     });
 
@@ -740,15 +685,15 @@
 
     // ---------- Scroll reveal ----------
     var revealEls = document.querySelectorAll('.reveal');
-    var revealObserver = new IntersectionObserver(function(entries){
+    var observer = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
         if (entry.isIntersecting){
           entry.target.classList.add('is-visible');
-          revealObserver.unobserve(entry.target);
+          observer.unobserve(entry.target);
         }
       });
     }, { threshold: 0.15 });
-    revealEls.forEach(function(el){ revealObserver.observe(el); });
+    revealEls.forEach(function(el){ observer.observe(el); });
 
     // ---------- 3D animated background: an automation workflow canvas ----------
     // Labeled step "chips" (the real apps/services a workflow connects) linked
