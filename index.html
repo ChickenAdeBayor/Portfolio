@@ -176,12 +176,14 @@
     text-transform: uppercase;
     color: var(--ink-soft);
     margin-bottom: 22px;
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
   .hero h1{
     font-size: clamp(2.6rem, 7vw, 5.2rem);
     line-height: 1.05;
     color: var(--ink);
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
   .hero h1 span{
@@ -195,6 +197,7 @@
     font-size: 1.05rem;
     line-height: 1.7;
     color: var(--ink-soft);
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
   .start-btn{
@@ -209,7 +212,7 @@
     border-radius: 999px;
     box-shadow: var(--shadow);
     cursor: pointer;
-    transition: box-shadow 0.25s ease, transform 0.25s ease, background 0.25s ease;
+    transition: box-shadow 0.25s ease, transform 0.25s ease, background 0.25s ease, opacity 0.5s ease;
   }
 
   .start-btn:hover{
@@ -236,6 +239,27 @@
     align-items: center;
     gap: 10px;
     opacity: 0.8;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  /* Plays while the "Let's start" button dives the camera into the
+     workflow canvas: the hero copy zooms/fades out of the way so the
+     3D scene reads as flying forward, not as text sitting over it. */
+  .hero.zooming .hero-kicker,
+  .hero.zooming h1,
+  .hero.zooming p{
+    opacity: 0;
+    transform: scale(1.16);
+  }
+
+  .hero.zooming .start-btn{
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .hero.zooming .scroll-cue{
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
   }
 
   .scroll-cue .line{
@@ -629,9 +653,27 @@
     // ---------- Footer year ----------
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // ---------- Smooth start button ----------
+    // ---------- Start button: zoom into the 3D scene, then land on About ----------
     document.getElementById('start-btn').addEventListener('click', function(){
-      document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+      var hero = document.getElementById('hero');
+      var about = document.getElementById('about');
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reduceMotion || !window.__zoomIntoScene){
+        about.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+        return;
+      }
+
+      hero.classList.add('zooming');
+      window.__zoomIntoScene(850, function(){
+        about.scrollIntoView({ behavior: 'smooth' });
+        // The About section's frosted panel hides this reset, so the
+        // camera is ready to zoom again next time without a visible cut.
+        setTimeout(function(){
+          window.__resetSceneZoom();
+          hero.classList.remove('zooming');
+        }, 700);
+      });
     });
 
     // ---------- Nav background on scroll ----------
@@ -668,10 +710,37 @@
 
       var scene = new THREE.Scene();
       var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-      camera.position.z = 20;
+      var baseCameraZ = 20;
+      camera.position.z = baseCameraZ;
 
       var group = new THREE.Group();
       scene.add(group);
+
+      // Flies the camera forward through the workflow canvas, like diving
+      // into it. The main render loop below picks up the new position each
+      // frame, so this only needs to animate camera.position.z over time.
+      window.__zoomIntoScene = function(duration, onDone){
+        var startZ = camera.position.z;
+        var targetZ = 2.5;
+        var startTime = performance.now();
+
+        function step(now){
+          var elapsed = now - startTime;
+          var t = Math.min(elapsed / duration, 1);
+          var eased = t * t * t; // ease-in: slow start, accelerating dive
+          camera.position.z = startZ + (targetZ - startZ) * eased;
+          if (t < 1){
+            requestAnimationFrame(step);
+          } else if (onDone){
+            onDone();
+          }
+        }
+        requestAnimationFrame(step);
+      };
+
+      window.__resetSceneZoom = function(){
+        camera.position.z = baseCameraZ;
+      };
 
       var inkColor = '#2C3E50';
 
