@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects — Portfolio</title>
+<meta name="description" content="Selected automation projects by Primo Alota Jr.">
+<script>
+  (function(){
+    try {
+      var stored = localStorage.getItem('theme');
+      if (stored === 'dark' || stored === 'light'){
+        document.documentElement.setAttribute('data-theme', stored);
+      }
+    } catch (e) {}
+  })();
+</script>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+  <nav class="nav" id="nav">
+    <ul class="nav-links">
+      <li><a href="about.html">About</a></li>
+      <li><a href="workstation.html">Workstation</a></li>
+      <li><a href="projects.html" class="active">Projects</a></li>
+      <li><a href="contact.html">Contact me</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+          <circle cx="12" cy="12" r="4.5"></circle>
+          <path d="M12 2.5v2.5M12 19v2.5M4.4 4.4l1.8 1.8M17.8 17.8l1.8 1.8M2.5 12H5M19 12h2.5M4.4 19.6l1.8-1.8M17.8 6.2l1.8-1.8"></path>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"></path>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ---------- Projects ---------- -->
+  <section id="projects">
+    <div class="section-inner">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow reveal">Work</div>
+          <h2 class="reveal">Selected Projects</h2>
+        </div>
+        <p class="reveal">A few automations I've shipped recently.</p>
+      </div>
+
+      <div class="projects-grid">
+        <article class="project-card reveal">
+          <div class="project-thumb thumb-1">AI Agent</div>
+          <div class="project-body">
+            <h3>AI Support Agent</h3>
+            <p>An AI-powered agent that triages and resolves customer support tickets automatically, escalating only what actually needs a human.</p>
+            <div class="tags"><span>OpenAI API</span><span>n8n</span><span>Zendesk</span></div>
+            <a href="contact.html" class="project-link">Get in touch →</a>
+          </div>
+        </article>
+
+        <article class="project-card reveal">
+          <div class="project-thumb thumb-2">Lead Pipeline</div>
+          <div class="project-body">
+            <h3>Lead Enrichment Pipeline</h3>
+            <p>Automated pipeline that enriches inbound leads with company data and routes each one to the right sales rep in real time.</p>
+            <div class="tags"><span>Make.com</span><span>Clearbit</span><span>Google Sheets</span></div>
+            <a href="contact.html" class="project-link">Get in touch →</a>
+          </div>
+        </article>
+
+        <article class="project-card reveal">
+          <div class="project-thumb thumb-3">Invoice AI</div>
+          <div class="project-body">
+            <h3>Invoice Processing Automation</h3>
+            <p>Extracts line items from incoming invoices with AI and syncs them straight into the accounting system — no manual entry.</p>
+            <div class="tags"><span>Python</span><span>GPT-4 Vision</span><span>QuickBooks API</span></div>
+            <a href="contact.html" class="project-link">Get in touch →</a>
+          </div>
+        </article>
+
+        <article class="project-card reveal">
+          <div class="project-thumb thumb-4">Slack Sync</div>
+          <div class="project-body">
+            <h3>Slack + CRM Sync</h3>
+            <p>Keeps Slack and the CRM in sync automatically, so deal updates and customer messages never fall through the cracks.</p>
+            <div class="tags"><span>Zapier</span><span>Slack API</span><span>HubSpot</span></div>
+            <a href="contact.html" class="project-link">Get in touch →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    &copy; <span id="year"></span> Primo Alota Jr. Built with curiosity.
+  </footer>
+
+  <script src="assets/site.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="assets/background.js"></script>
+</body>
+</html>
