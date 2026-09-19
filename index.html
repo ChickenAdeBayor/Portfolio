@@ -590,11 +590,6 @@
 
   <nav class="nav" id="nav">
     <div class="nav-right">
-      <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
           <circle cx="12" cy="12" r="4.5"></circle>
@@ -612,112 +607,6 @@
     <div class="hero-kicker">AI Automation Engineer</div>
     <h1><span>Primo Alota Jr</span></h1>
     <p>I design and build AI-powered automations that connect your tools, cut out manual work, and let your business run itself. Replace this tagline with your own introduction.</p>
-    <button class="start-btn" id="start-btn">Let's start</button>
-
-    <div class="scroll-cue">
-      <span>Scroll</span>
-      <span class="line"></span>
-    </div>
-  </section>
-
-  <!-- ---------- About ---------- -->
-  <section id="about">
-    <div class="section-inner about-grid">
-      <div class="avatar reveal">PA</div>
-      <div class="about-text">
-        <div class="eyebrow reveal">About</div>
-        <h2 class="reveal">I build the automations behind the scenes.</h2>
-        <p class="reveal">
-          Replace this paragraph with your own story. I specialize in AI automation — connecting apps, APIs, and
-          language models into workflows that save teams hours every week. From lead pipelines to AI support agents,
-          I turn repetitive manual processes into systems that run themselves.
-        </p>
-        <p class="reveal">
-          Add a second paragraph if needed: your automation philosophy, favorite tools, or a metric of
-          impact — hours saved, workflows shipped, or businesses automated.
-        </p>
-        <ul class="skills reveal">
-          <li>n8n</li>
-          <li>Zapier</li>
-          <li>Make.com</li>
-          <li>Python</li>
-          <li>OpenAI API</li>
-          <li>LangChain</li>
-          <li>Webhooks &amp; REST APIs</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ---------- Projects ---------- -->
-  <section id="projects">
-    <div class="section-inner">
-      <div class="section-head">
-        <div>
-          <div class="eyebrow reveal">Work</div>
-          <h2 class="reveal">Selected Projects</h2>
-        </div>
-        <p class="reveal">A few automations I've shipped recently. Swap these cards with your real projects, screenshots, and links.</p>
-      </div>
-
-      <div class="projects-grid">
-        <article class="project-card reveal">
-          <div class="project-thumb thumb-1">AI Agent</div>
-          <div class="project-body">
-            <h3>AI Support Agent</h3>
-            <p>An AI-powered agent that triages and resolves customer support tickets automatically, escalating only what actually needs a human.</p>
-            <div class="tags"><span>OpenAI API</span><span>n8n</span><span>Zendesk</span></div>
-            <a href="#" class="project-link">View project →</a>
-          </div>
-        </article>
-
-        <article class="project-card reveal">
-          <div class="project-thumb thumb-2">Lead Pipeline</div>
-          <div class="project-body">
-            <h3>Lead Enrichment Pipeline</h3>
-            <p>Automated pipeline that enriches inbound leads with company data and routes each one to the right sales rep in real time.</p>
-            <div class="tags"><span>Make.com</span><span>Clearbit</span><span>Google Sheets</span></div>
-            <a href="#" class="project-link">View project →</a>
-          </div>
-        </article>
-
-        <article class="project-card reveal">
-          <div class="project-thumb thumb-3">Invoice AI</div>
-          <div class="project-body">
-            <h3>Invoice Processing Automation</h3>
-            <p>Extracts line items from incoming invoices with AI and syncs them straight into the accounting system — no manual entry.</p>
-            <div class="tags"><span>Python</span><span>GPT-4 Vision</span><span>QuickBooks API</span></div>
-            <a href="#" class="project-link">View project →</a>
-          </div>
-        </article>
-
-        <article class="project-card reveal">
-          <div class="project-thumb thumb-4">Slack Sync</div>
-          <div class="project-body">
-            <h3>Slack + CRM Sync</h3>
-            <p>Keeps Slack and the CRM in sync automatically, so deal updates and customer messages never fall through the cracks.</p>
-            <div class="tags"><span>Zapier</span><span>Slack API</span><span>HubSpot</span></div>
-            <a href="#" class="project-link">View project →</a>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ---------- Contact ---------- -->
-  <section id="contact">
-    <div class="section-inner contact">
-      <div class="eyebrow reveal">Get in touch</div>
-      <h2 class="reveal">Let's build something together.</h2>
-      <p class="reveal">Have a project in mind, or just want to say hello? My inbox is always open.</p>
-      <a href="mailto:hello@yourname.com" class="contact-email reveal">hello@yourname.com</a>
-
-      <ul class="socials reveal">
-        <li><a href="#" aria-label="GitHub">GH</a></li>
-        <li><a href="#" aria-label="LinkedIn">IN</a></li>
-        <li><a href="#" aria-label="Twitter / X">X</a></li>
-      </ul>
-    </div>
   </section>
 
   <footer>
@@ -770,29 +659,12 @@
       });
     })();
 
-    // ---------- Smooth start button ----------
-    document.getElementById('start-btn').addEventListener('click', function(){
-      document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
-    });
-
     // ---------- Nav background on scroll ----------
     var nav = document.getElementById('nav');
     window.addEventListener('scroll', function(){
       if (window.scrollY > 40) nav.classList.add('scrolled');
       else nav.classList.remove('scrolled');
     });
-
-    // ---------- Scroll reveal ----------
-    var revealEls = document.querySelectorAll('.reveal');
-    var observer = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if (entry.isIntersecting){
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
-    revealEls.forEach(function(el){ observer.observe(el); });
 
     // ---------- 3D animated background: an automation workflow canvas ----------
     // Labeled step "chips" (the real apps/services a workflow connects) linked
