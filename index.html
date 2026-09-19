@@ -47,38 +47,38 @@
      since a dark accent has no contrast left to give on a dark ground. */
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg: #141B22;
+      --bg: #000000;
       --bg-alt: #2C3E50;
       --ink: #ECF0F1;
       --ink-soft: #AEB9C0;
-      --card: #1C2733;
+      --card: #0D0D0D;
       --accent: #3498DB;
       --accent-2: #7F8C8D;
       --accent-3: #BDC3C7;
       --signal: #ECF0F1;
       --ink-rgb: 236,240,241;
       --shadow-rgb: 0,0,0;
-      --nav-bg-0: rgba(20,27,34,0);
-      --nav-bg-1: rgba(20,27,34,0.85);
-      --panel-bg: rgba(20,27,34,0.82);
+      --nav-bg-0: rgba(0,0,0,0);
+      --nav-bg-1: rgba(0,0,0,0.85);
+      --panel-bg: rgba(0,0,0,0.82);
     }
   }
 
   :root[data-theme="dark"]{
-    --bg: #141B22;
+    --bg: #000000;
     --bg-alt: #2C3E50;
     --ink: #ECF0F1;
     --ink-soft: #AEB9C0;
-    --card: #1C2733;
+    --card: #0D0D0D;
     --accent: #3498DB;
     --accent-2: #7F8C8D;
     --accent-3: #BDC3C7;
     --signal: #ECF0F1;
     --ink-rgb: 236,240,241;
     --shadow-rgb: 0,0,0;
-    --nav-bg-0: rgba(20,27,34,0);
-    --nav-bg-1: rgba(20,27,34,0.85);
-    --panel-bg: rgba(20,27,34,0.82);
+    --nav-bg-0: rgba(0,0,0,0);
+    --nav-bg-1: rgba(0,0,0,0.85);
+    --panel-bg: rgba(0,0,0,0.82);
   }
 
   *{ box-sizing: border-box; }
@@ -691,7 +691,7 @@
       // theme is active, matching the page's light/dark tokens.
       function chipPalette(theme){
         return theme === 'dark'
-          ? { fill: 'rgba(28,39,51,0.92)', stroke: 'rgba(236,240,241,0.18)', ink: '#ECF0F1' }
+          ? { fill: 'rgba(13,13,13,0.92)', stroke: 'rgba(236,240,241,0.18)', ink: '#ECF0F1' }
           : { fill: 'rgba(255,255,255,0.94)', stroke: 'rgba(44,62,80,0.16)', ink: '#2C3E50' };
       }
 
