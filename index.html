@@ -121,7 +121,7 @@
     z-index: 50;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     padding: 22px 6vw;
     background: var(--nav-bg-0);
     transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
@@ -136,12 +136,6 @@
   }
 
   .nav *{ pointer-events: auto; }
-
-  .nav-logo{
-    font-family: Georgia, serif;
-    font-size: 1.1rem;
-    letter-spacing: 0.04em;
-  }
 
   .nav-right{
     display: flex;
@@ -595,7 +589,6 @@
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
   <nav class="nav" id="nav">
-    <div class="nav-logo">Primo Alota Jr</div>
     <div class="nav-right">
       <ul class="nav-links">
         <li><a href="#about">About</a></li>
