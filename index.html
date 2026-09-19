@@ -695,6 +695,15 @@
           : { fill: 'rgba(255,255,255,0.94)', stroke: 'rgba(44,62,80,0.16)', ink: '#2C3E50' };
       }
 
+      function hexToRgb(hex){
+        var clean = hex.replace('#', '');
+        if (clean.length === 3){
+          clean = clean.split('').map(function(ch){ return ch + ch; }).join('');
+        }
+        var num = parseInt(clean, 16);
+        return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+      }
+
       function roundRectPath(ctx, x, y, w, h, r){
         ctx.beginPath();
         ctx.moveTo(x + r, y);
@@ -733,9 +742,28 @@
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
+        var dotX = paddingX / 1.4;
+        var dotY = height / 2;
+
+        // A soft halo behind each dot reads as a lit indicator against
+        // true black — on a light background the same glow would just
+        // look like a smudge, so it's dark-theme only.
+        if (theme === 'dark'){
+          var rgb = hexToRgb(dotColor);
+          var glowRadius = dotSize * 2.2;
+          var glow = ctx.createRadialGradient(dotX, dotY, 0, dotX, dotY, glowRadius);
+          glow.addColorStop(0, 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.8)');
+          glow.addColorStop(0.5, 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.28)');
+          glow.addColorStop(1, 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0)');
+          ctx.fillStyle = glow;
+          ctx.beginPath();
+          ctx.arc(dotX, dotY, glowRadius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
         ctx.beginPath();
         ctx.fillStyle = dotColor;
-        ctx.arc(paddingX / 1.4, height / 2, dotSize / 2, 0, Math.PI * 2);
+        ctx.arc(dotX, dotY, dotSize / 2, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.fillStyle = palette.ink;
