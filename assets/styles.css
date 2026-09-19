@@ -360,16 +360,58 @@ section#contact{
   max-width: 640px;
 }
 
+.workstation-subhead{
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 64px;
+  margin-bottom: 8px;
+}
+
+.workstation-subhead:first-of-type{
+  margin-top: 48px;
+}
+
 .workstation-groups{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 36px;
-  margin-top: 48px;
+  margin-top: 24px;
 }
 
 .workstation-group h3{
   font-size: 1.05rem;
   margin-bottom: 16px;
+  color: var(--ink);
+}
+
+.spec-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.spec-card{
+  background: var(--card);
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 22px 24px;
+}
+
+.spec-label{
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.spec-value{
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.1rem;
   color: var(--ink);
 }
 
