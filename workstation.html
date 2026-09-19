@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio</title>
-<meta name="description" content="Portfolio of Primo Alota Jr — AI Automation Engineer.">
+<title>Workstation — Portfolio</title>
+<meta name="description" content="The tools and tech stack Primo Alota Jr builds automations with.">
 <script>
-  // Applied before first paint so a stored preference never flashes the
-  // wrong theme. If nothing is stored, the CSS media query alone decides.
   (function(){
     try {
       var stored = localStorage.getItem('theme');
@@ -26,7 +24,7 @@
   <nav class="nav" id="nav">
     <ul class="nav-links">
       <li><a href="about.html">About</a></li>
-      <li><a href="workstation.html">Workstation</a></li>
+      <li><a href="workstation.html" class="active">Workstation</a></li>
       <li><a href="projects.html">Projects</a></li>
       <li><a href="contact.html">Contact me</a></li>
     </ul>
@@ -43,12 +41,51 @@
     </div>
   </nav>
 
-  <!-- ---------- Hero / Splash ---------- -->
-  <section class="hero" id="hero">
-    <div class="hero-kicker">AI Automation Engineer</div>
-    <h1><span>Primo Alota Jr</span></h1>
-    <p>I design and build AI-powered automations that connect your tools, cut out manual work, and let your business run itself.</p>
-    <a href="about.html" class="start-btn">Know more</a>
+  <!-- ---------- Workstation ---------- -->
+  <section id="workstation">
+    <div class="section-inner">
+      <div class="eyebrow reveal">Workstation</div>
+      <h2 class="reveal">The tools I build with.</h2>
+      <p class="reveal workstation-intro">A look at the automation platforms, AI tools, and languages behind the workflows I ship.</p>
+
+      <div class="workstation-groups">
+        <div class="workstation-group reveal">
+          <h3>Automation Platforms</h3>
+          <ul class="skills">
+            <li>n8n</li>
+            <li>Zapier</li>
+            <li>Make.com</li>
+          </ul>
+        </div>
+
+        <div class="workstation-group reveal">
+          <h3>AI &amp; LLMs</h3>
+          <ul class="skills">
+            <li>OpenAI API</li>
+            <li>GPT-4</li>
+            <li>LangChain</li>
+          </ul>
+        </div>
+
+        <div class="workstation-group reveal">
+          <h3>Data &amp; Integration</h3>
+          <ul class="skills">
+            <li>Webhooks &amp; REST APIs</li>
+            <li>Airtable</li>
+            <li>Google Sheets</li>
+            <li>PostgreSQL</li>
+          </ul>
+        </div>
+
+        <div class="workstation-group reveal">
+          <h3>Languages</h3>
+          <ul class="skills">
+            <li>Python</li>
+            <li>JavaScript</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </section>
 
   <footer>

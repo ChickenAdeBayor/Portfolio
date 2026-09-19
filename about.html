@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio</title>
-<meta name="description" content="Portfolio of Primo Alota Jr — AI Automation Engineer.">
+<title>About — Portfolio</title>
+<meta name="description" content="About Primo Alota Jr — AI Automation Engineer.">
 <script>
-  // Applied before first paint so a stored preference never flashes the
-  // wrong theme. If nothing is stored, the CSS media query alone decides.
   (function(){
     try {
       var stored = localStorage.getItem('theme');
@@ -25,7 +23,7 @@
 
   <nav class="nav" id="nav">
     <ul class="nav-links">
-      <li><a href="about.html">About</a></li>
+      <li><a href="about.html" class="active">About</a></li>
       <li><a href="workstation.html">Workstation</a></li>
       <li><a href="projects.html">Projects</a></li>
       <li><a href="contact.html">Contact me</a></li>
@@ -43,12 +41,33 @@
     </div>
   </nav>
 
-  <!-- ---------- Hero / Splash ---------- -->
-  <section class="hero" id="hero">
-    <div class="hero-kicker">AI Automation Engineer</div>
-    <h1><span>Primo Alota Jr</span></h1>
-    <p>I design and build AI-powered automations that connect your tools, cut out manual work, and let your business run itself.</p>
-    <a href="about.html" class="start-btn">Know more</a>
+  <!-- ---------- About ---------- -->
+  <section id="about">
+    <div class="section-inner about-grid">
+      <div class="avatar reveal">PA</div>
+      <div class="about-text">
+        <div class="eyebrow reveal">About</div>
+        <h2 class="reveal">I build the automations behind the scenes.</h2>
+        <p class="reveal">
+          I specialize in AI automation — connecting apps, APIs, and language models into workflows that
+          save teams hours every week. From lead pipelines to AI support agents, I turn repetitive manual
+          processes into systems that run themselves.
+        </p>
+        <p class="reveal">
+          My approach is simple: find the manual, repetitive work first, then design an automation that
+          removes it without adding fragility. Every workflow I ship is built to be reliable, not just clever.
+        </p>
+        <ul class="skills reveal">
+          <li>n8n</li>
+          <li>Zapier</li>
+          <li>Make.com</li>
+          <li>Python</li>
+          <li>OpenAI API</li>
+          <li>LangChain</li>
+          <li>Webhooks &amp; REST APIs</li>
+        </ul>
+      </div>
+    </div>
   </section>
 
   <footer>

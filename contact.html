@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio</title>
-<meta name="description" content="Portfolio of Primo Alota Jr — AI Automation Engineer.">
+<title>Contact — Portfolio</title>
+<meta name="description" content="Get in touch with Primo Alota Jr — AI Automation Engineer.">
 <script>
-  // Applied before first paint so a stored preference never flashes the
-  // wrong theme. If nothing is stored, the CSS media query alone decides.
   (function(){
     try {
       var stored = localStorage.getItem('theme');
@@ -28,7 +26,7 @@
       <li><a href="about.html">About</a></li>
       <li><a href="workstation.html">Workstation</a></li>
       <li><a href="projects.html">Projects</a></li>
-      <li><a href="contact.html">Contact me</a></li>
+      <li><a href="contact.html" class="active">Contact me</a></li>
     </ul>
     <div class="nav-right">
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">
@@ -43,12 +41,20 @@
     </div>
   </nav>
 
-  <!-- ---------- Hero / Splash ---------- -->
-  <section class="hero" id="hero">
-    <div class="hero-kicker">AI Automation Engineer</div>
-    <h1><span>Primo Alota Jr</span></h1>
-    <p>I design and build AI-powered automations that connect your tools, cut out manual work, and let your business run itself.</p>
-    <a href="about.html" class="start-btn">Know more</a>
+  <!-- ---------- Contact ---------- -->
+  <section id="contact">
+    <div class="section-inner contact">
+      <div class="eyebrow reveal">Get in touch</div>
+      <h2 class="reveal">Let's build something together.</h2>
+      <p class="reveal">Have a project in mind, or just want to say hello? My inbox is always open.</p>
+      <a href="mailto:hello@yourname.com" class="contact-email reveal">hello@yourname.com</a>
+
+      <ul class="socials reveal">
+        <li><a href="#" aria-label="GitHub">GH</a></li>
+        <li><a href="#" aria-label="LinkedIn">IN</a></li>
+        <li><a href="#" aria-label="Twitter / X">X</a></li>
+      </ul>
+    </div>
   </section>
 
   <footer>
