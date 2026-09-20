@@ -389,7 +389,47 @@ section#contact{
   list-style: none;
 }
 
+.hero-socials li{
+  position: relative;
+}
+
+/* Sonar-style pulse rings, expanding out from the icon on hover. */
+.hero-socials li::before,
+.hero-socials li::after{
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--ink);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero-socials li:hover::before,
+.hero-socials li:hover::after,
+.hero-socials li:focus-within::before,
+.hero-socials li:focus-within::after{
+  animation: social-pulse 1.6s ease-out infinite;
+}
+
+.hero-socials li:hover::after,
+.hero-socials li:focus-within::after{
+  animation-delay: 0.55s;
+}
+
+@keyframes social-pulse{
+  0%{ transform: scale(1); opacity: 0.5; }
+  100%{ transform: scale(1.7); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .hero-socials li::before,
+  .hero-socials li::after{ animation: none !important; }
+}
+
 .hero-socials a{
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -397,6 +437,7 @@ section#contact{
   height: 42px;
   border-radius: 50%;
   border: 1px solid var(--border);
+  background: var(--bg);
   color: var(--ink-soft);
   text-decoration: none;
   font-size: 0.72rem;
