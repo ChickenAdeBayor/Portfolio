@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Preview</title>
+<meta name="description" content="Preview of the redesigned homepage hero — Primo Alota Jr, AI Automation Engineer.">
+<meta name="robots" content="noindex">
+<script>
+  // Applied before first paint so a stored preference never flashes the
+  // wrong theme. If nothing is stored, the CSS media query alone decides.
+  (function(){
+    try {
+      var stored = localStorage.getItem('theme');
+      if (stored === 'dark' || stored === 'light'){
+        document.documentElement.setAttribute('data-theme', stored);
+      }
+    } catch (e) {}
+  })();
+</script>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+  <div style="position:relative;z-index:60;text-align:center;padding:8px 16px;font-size:0.78rem;background:#3498DB;color:#fff;">
+    Preview build — not the live site. <a href="../index.html" style="color:#fff;text-decoration:underline;">View the real homepage</a>
+  </div>
+
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+  <nav class="nav" id="nav" style="top:36px;">
+    <ul class="nav-links">
+      <li><a href="../index.html" class="active">Home</a></li>
+      <li><a href="../about.html">About</a></li>
+      <li><a href="../workstation.html">Workstation</a></li>
+      <li><a href="../projects.html">Projects</a></li>
+      <li><a href="../contact.html">Contact me</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="nav-greet">
+        <img src="assets/images/profile.jpg" alt="" class="nav-greet-avatar">
+        <span>Hey, I'm Primo <span class="nav-greet-wave" aria-hidden="true">👋</span></span>
+      </div>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+          <circle cx="12" cy="12" r="4.5"></circle>
+          <path d="M12 2.5v2.5M12 19v2.5M4.4 4.4l1.8 1.8M17.8 17.8l1.8 1.8M2.5 12H5M19 12h2.5M4.4 19.6l1.8-1.8M17.8 6.2l1.8-1.8"></path>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"></path>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ---------- Hero / Splash ---------- -->
+  <section class="hero" id="hero">
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <h1 class="hero-huge">
+        <span class="hero-line">Systems</span>
+        <span class="hero-line hero-line-2">Automations</span>
+      </h1>
+
+      <div class="hero-actions">
+        <a href="../about.html" class="hero-btn hero-btn-outline">
+          Know More
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+        </a>
+        <a href="../contact.html" class="hero-btn hero-btn-fill">Let's Talk</a>
+      </div>
+
+      <ul class="hero-socials">
+        <li><a href="#" aria-label="GitHub">GH</a></li>
+        <li><a href="#" aria-label="LinkedIn">IN</a></li>
+        <li><a href="#" aria-label="Twitter / X">X</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    &copy; <span id="year"></span> Primo Alota Jr. Built with curiosity.
+  </footer>
+
+  <script src="assets/site.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="assets/background.js"></script>
+</body>
+</html>
