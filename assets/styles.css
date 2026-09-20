@@ -309,14 +309,6 @@ section#contact{
   max-width: 1080px;
 }
 
-.hero-eyebrow{
-  font-size: 0.8rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin-bottom: 6px;
-}
-
 .hero-huge{
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-weight: 800;
@@ -336,15 +328,6 @@ section#contact{
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-}
-
-.hero-mid{
-  display: block;
-  font-size: clamp(0.95rem, 2vw, 1.3rem);
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--ink-soft);
-  margin: 6px 0;
 }
 
 .hero-actions{
