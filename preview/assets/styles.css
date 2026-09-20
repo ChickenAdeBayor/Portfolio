@@ -126,47 +126,6 @@ a{ color: inherit; }
   gap: 20px;
 }
 
-.nav-greet{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 16px 6px 6px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  font-size: 0.82rem;
-  color: var(--ink-soft);
-  white-space: nowrap;
-}
-
-.nav-greet-avatar{
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: 50% 16%;
-  flex-shrink: 0;
-}
-
-.nav-greet-wave{
-  display: inline-block;
-  animation: wave 2.4s ease-in-out infinite;
-  transform-origin: 70% 70%;
-}
-
-@keyframes wave{
-  0%, 60%, 100%{ transform: rotate(0deg); }
-  10%{ transform: rotate(14deg); }
-  20%{ transform: rotate(-8deg); }
-  30%{ transform: rotate(14deg); }
-  40%{ transform: rotate(-4deg); }
-}
-
-@media (max-width: 720px){
-  .nav-greet span{ display: none; }
-  .nav-greet{ padding: 4px; border-color: transparent; background: transparent; }
-}
-
 .nav-links{
   display: flex;
   gap: 32px;
@@ -391,6 +350,12 @@ section#contact{
 
 .hero-socials li{
   position: relative;
+  transition: transform 0.25s ease;
+}
+
+.hero-socials li:hover,
+.hero-socials li:focus-within{
+  transform: translateY(-3px);
 }
 
 /* Sonar-style pulse rings, expanding out from the icon on hover. */
@@ -447,7 +412,6 @@ section#contact{
 }
 
 .hero-socials a:hover{
-  transform: translateY(-3px);
   border-color: var(--ink);
   color: var(--card);
   background: var(--ink);
