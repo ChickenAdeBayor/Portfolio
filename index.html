@@ -32,6 +32,10 @@
       <li><a href="contact.html">Contact me</a></li>
     </ul>
     <div class="nav-right">
+      <div class="nav-greet">
+        <img src="assets/images/profile.jpg" alt="" class="nav-greet-avatar">
+        <span>Hey, I'm Primo <span class="nav-greet-wave" aria-hidden="true">👋</span></span>
+      </div>
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
           <circle cx="12" cy="12" r="4.5"></circle>
@@ -46,10 +50,29 @@
 
   <!-- ---------- Hero / Splash ---------- -->
   <section class="hero" id="hero">
-    <div class="hero-kicker">AI Automation Engineer</div>
-    <h1><span>Primo Alota Jr</span></h1>
-    <p>I design and build AI-powered automations that connect your tools, cut out manual work, and let your business run itself.</p>
-    <a href="about.html" class="start-btn">Know more</a>
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Automating Intuitive</div>
+      <h1 class="hero-huge">
+        <span class="hero-line">Systems</span>
+        <span class="hero-mid">&amp; Effortless</span>
+        <span class="hero-line hero-line-2">Automations</span>
+      </h1>
+
+      <div class="hero-actions">
+        <a href="about.html" class="hero-btn hero-btn-outline">
+          Know More
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+        </a>
+        <a href="contact.html" class="hero-btn hero-btn-fill">Let's Talk</a>
+      </div>
+
+      <ul class="hero-socials">
+        <li><a href="#" aria-label="GitHub">GH</a></li>
+        <li><a href="#" aria-label="LinkedIn">IN</a></li>
+        <li><a href="#" aria-label="Twitter / X">X</a></li>
+      </ul>
+    </div>
   </section>
 
   <footer>
