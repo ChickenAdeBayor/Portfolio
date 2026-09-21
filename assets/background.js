@@ -19,13 +19,8 @@
   scene.add(group);
 
   // Chip colors are baked into a canvas bitmap, so they can't just
-  // follow a CSS variable — this picks the right set for whichever
-  // theme is active, matching the page's light/dark tokens.
-  function chipPalette(theme){
-    return theme === 'dark'
-      ? { fill: 'rgba(13,13,13,0.92)', stroke: 'rgba(236,240,241,0.18)', ink: '#ECF0F1' }
-      : { fill: 'rgba(255,255,255,0.94)', stroke: 'rgba(44,62,80,0.16)', ink: '#2C3E50' };
-  }
+  // follow a CSS variable — matches the page's constant dark tokens.
+  var CHIP_PALETTE = { fill: 'rgba(13,13,13,0.92)', stroke: 'rgba(236,240,241,0.18)', ink: '#ECF0F1' };
 
   function hexToRgb(hex){
     var clean = hex.replace('#', '');
@@ -48,8 +43,8 @@
 
   // Draws a small rounded "step" chip (dot + label) to a canvas texture,
   // the same visual grammar automation-builder canvases use for nodes.
-  function makeChipTexture(label, dotColor, theme){
-    var palette = chipPalette(theme);
+  function makeChipTexture(label, dotColor){
+    var palette = CHIP_PALETTE;
     var res = 3;
     var fontSize = 26;
     var paddingX = 20;
@@ -78,20 +73,17 @@
     var dotY = height / 2;
 
     // A soft halo behind each dot reads as a lit indicator against
-    // true black — on a light background the same glow would just
-    // look like a smudge, so it's dark-theme only.
-    if (theme === 'dark'){
-      var rgb = hexToRgb(dotColor);
-      var glowRadius = dotSize * 2.2;
-      var glow = ctx.createRadialGradient(dotX, dotY, 0, dotX, dotY, glowRadius);
-      glow.addColorStop(0, 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.8)');
-      glow.addColorStop(0.5, 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.28)');
-      glow.addColorStop(1, 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0)');
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(dotX, dotY, glowRadius, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    // true black.
+    var rgb = hexToRgb(dotColor);
+    var glowRadius = dotSize * 2.2;
+    var glow = ctx.createRadialGradient(dotX, dotY, 0, dotX, dotY, glowRadius);
+    glow.addColorStop(0, 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.8)');
+    glow.addColorStop(0.5, 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.28)');
+    glow.addColorStop(1, 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, glowRadius, 0, Math.PI * 2);
+    ctx.fill();
 
     ctx.beginPath();
     ctx.fillStyle = dotColor;
@@ -108,14 +100,11 @@
     return { texture: texture, aspect: width / height };
   }
 
-  // A soft light-to-dark dot rather than an additive glow: against a
-  // light background an additive blend just washes out to white, so
-  // this composites normally and reads as a small solid data packet.
-  // The fade-out ring uses a dark tone in light mode and a light one
-  // in dark mode, so it always has something to fade *into*.
-  function makeGlowTexture(theme){
-    var midColor = theme === 'dark' ? 'rgba(189,195,199,0.85)' : 'rgba(52,73,94,0.92)';
-    var edgeColor = theme === 'dark' ? 'rgba(189,195,199,0)' : 'rgba(44,62,80,0)';
+  // A soft light-to-dark dot rather than an additive glow, reading as
+  // a small solid data packet that fades into the dark background.
+  function makeGlowTexture(){
+    var midColor = 'rgba(189,195,199,0.85)';
+    var edgeColor = 'rgba(189,195,199,0)';
     var size = 128;
     var c = document.createElement('canvas');
     c.width = c.height = size;
@@ -159,10 +148,6 @@
   var stepCount = isMobile ? 8 : 14;
   var shuffled = steps.slice().sort(function(){ return Math.random() - 0.5; }).slice(0, stepCount);
 
-  // The theme-toggle script (loaded earlier, before three.js) already
-  // resolved the effective theme into this global.
-  var currentTheme = window.__initialBgTheme === 'dark' ? 'dark' : 'light';
-
   // Keep a wide horizontal gap around center clear of chips: at this
   // camera distance the hero copy spans roughly world-x -7 to +7, and
   // it has no frosted backdrop (unlike the sections below) to fall
@@ -180,7 +165,7 @@
       (Math.random() - 0.5) * 8 - 5
     );
 
-    var chip = makeChipTexture(step.label, step.color, currentTheme);
+    var chip = makeChipTexture(step.label, step.color);
     var mat = new THREE.SpriteMaterial({ map: chip.texture, transparent: true, opacity: 0.95, depthWrite: false });
     var sprite = new THREE.Sprite(mat);
     var h = 1.05;
@@ -298,7 +283,7 @@
 
   // Glowing packets traveling along the connectors, like tasks moving
   // through the automation.
-  var glowTexture = makeGlowTexture(currentTheme);
+  var glowTexture = makeGlowTexture();
   var pulseCount = Math.min(edges.length, isMobile ? 5 : 10);
   var pulses = [];
   for (var p = 0; p < pulseCount; p++){
@@ -316,33 +301,6 @@
     group.add(sprite);
     pulses.push(sprite);
   }
-
-  // Chip and glow colors are baked into canvas textures at creation
-  // time, so switching themes means regenerating and swapping them —
-  // CSS variables alone can't reach into an already-drawn bitmap.
-  window.__setBackgroundTheme = function(theme){
-    if (theme === currentTheme) return;
-    currentTheme = theme;
-
-    chips.forEach(function(sprite, i){
-      var step = shuffled[i];
-      var oldTexture = sprite.material.map;
-      var next = makeChipTexture(step.label, step.color, currentTheme);
-      sprite.material.map = next.texture;
-      sprite.material.needsUpdate = true;
-      var h = 1.05;
-      sprite.scale.set(h * next.aspect, h, 1);
-      oldTexture.dispose();
-    });
-
-    var oldGlow = glowTexture;
-    glowTexture = makeGlowTexture(currentTheme);
-    pulses.forEach(function(sprite){
-      sprite.material.map = glowTexture;
-      sprite.material.needsUpdate = true;
-    });
-    oldGlow.dispose();
-  };
 
   var mouseX = 0, mouseY = 0;
   var targetRotX = 0, targetRotY = 0;
